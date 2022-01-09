@@ -48,6 +48,7 @@ class _HomePageState extends State<HomePage> {
           create: (context) => HomeController(),
         )
       ],
+      
       child: CupertinoApp(
         theme: const CupertinoThemeData(
           brightness: Brightness.dark,

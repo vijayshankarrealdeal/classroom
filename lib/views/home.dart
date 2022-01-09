@@ -1,3 +1,5 @@
+import 'package:classroom/routes/settings.dart';
+import 'package:classroom/widgets/model_popups.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -8,12 +10,21 @@ class HomeUI extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     return CupertinoPageScaffold(
       child: NestedScrollView(
         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
           return <Widget>[
-            const CupertinoSliverNavigationBar(
-              largeTitle: Text('Topic'),
+            CupertinoSliverNavigationBar(
+              largeTitle: const Text('Topic'),
+              trailing: CupertinoButton(
+                padding: EdgeInsets.zero,
+                child: const Icon(CupertinoIcons.settings),
+                onPressed: () => showmodelpop(
+                  context,
+                  
+                ),
+              ),
             )
           ];
         },
@@ -24,7 +35,7 @@ class HomeUI extends StatelessWidget {
                 CupertinoSliverRefreshControl(
                   onRefresh: () {
                     return Future.delayed(
-                      Duration(seconds: 1),
+                      const Duration(seconds: 2),
                     );
                   },
                 ),

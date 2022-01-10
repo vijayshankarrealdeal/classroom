@@ -1,14 +1,11 @@
 import 'dart:ui';
-import 'package:classroom/controllers/typography.dart';
+import 'package:classroom/widgets/loading_spinner.dart';
+import 'package:classroom/widgets/text_form.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:classroom/services/auth.dart';
 import 'package:provider/provider.dart';
 
-const Color colorMain = Color(0xff2b3139);
-const Color colorSecondary = Color(0xff7d7d84);
-const Color colorThird = Color(0xffffffff);
-const Color colorFourth = Color(0xffff286c);
 enum SignOptions { signIn, signUp, forgetPass }
 
 class SignIn extends StatefulWidget {
@@ -21,9 +18,9 @@ class SignIn extends StatefulWidget {
 class _SignInState extends State<SignIn> {
   SignOptions _formType = SignOptions.signIn;
   bool isSpin = true;
-  TextEditingController _email = TextEditingController();
-  TextEditingController _password = TextEditingController();
-  TextEditingController _confirmPassword = TextEditingController();
+  final TextEditingController _email = TextEditingController();
+  final TextEditingController _password = TextEditingController();
+  final TextEditingController _confirmPassword = TextEditingController();
   @override
   Widget build(BuildContext context) {
     final String primaryText =
@@ -32,45 +29,60 @@ class _SignInState extends State<SignIn> {
         ? "Need a Account ? Sign Up"
         : "Already Have An Account";
     final auth = Provider.of<Auth>(context);
-    final font = Provider.of<TypoGraphyOfApp>(context);
 
     return CupertinoPageScaffold(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          font.heading2(
-              "Classroom", Theme.of(context).textTheme.headline2!.color!),
+          Text('Classroom',
+              style:
+                  CupertinoTheme.of(context).textTheme.navLargeTitleTextStyle),
           SizedBox(
             height: MediaQuery.of(context).size.height * 0.06,
           ),
           Container(
             width: double.infinity,
           ),
+          Padding(
+            padding:
+                const EdgeInsets.symmetric(horizontal: 18.0, vertical: 4.0),
+            child: FormFeildApp(
+              controller: _email,
+              placeholder: "Email",
+            ),
+          ),
+          const SizedBox(height: 8.0),
           //TextForm
-          SizedBox(height: 8.0),
-          //TextForm
-          SizedBox(height: 8.0),
-          // _formType == SignOptions.signUp
-          //     ? TextForms(
-          //         isspin: isSpin,
-          //         enter: _confirmPassword,
-          //         placeholder: "Confirm Password",
-          //         hide: true,
-          //       )
-          //     : Text(''),
-          SizedBox(height: 15.0),
-          // isSpin
-          //     ? CupertinoButton(
-          //         color: colorschema.buttonColor(),
-          //         child: GenralText(
-          //           text: primaryText,
-          //           color: colorschema.genralText(),
-          //         ),
-          //         onPressed: () => submit(_email.text.trim(), _password.text,
-          //             _confirmPassword.text, auth, _ana),
-          //       )
-          //     : LoadingSpinner(size: 5),
+          Padding(
+            padding:
+                const EdgeInsets.symmetric(horizontal: 18.0, vertical: 4.0),
+            child: FormFeildApp(
+              controller: _password,
+              placeholder: "Password",
+              hide: true,
+            ),
+          ),
+          const SizedBox(height: 8.0),
+          _formType == SignOptions.signUp
+              ? Padding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 18.0, vertical: 4.0),
+                  child: FormFeildApp(
+                    controller: _confirmPassword,
+                    placeholder: "Confirm Password",
+                    hide: true,
+                  ),
+                )
+              : const Text(''),
+          const SizedBox(height: 15.0),
+          isSpin
+              ? CupertinoButton.filled(
+                  child: Text(primaryText),
+                  onPressed: () => submit(_email.text.trim(), _password.text,
+                      _confirmPassword.text, auth),
+                )
+              : loadingSpinner(),
           // CupertinoButton(
           //     padding: EdgeInsets.zero,
           //     child: GenralText(
@@ -81,34 +93,25 @@ class _SignInState extends State<SignIn> {
           //     onPressed: () {
           //       auth.signInWithGoogle();
           //     }),
-          // CupertinoButton(
-          //     padding: EdgeInsets.zero,
-          //     child: GenralText(
-          //       text: secondaryText,
-          //       family: 'SF-Pro-Text-Semibold',
-          //       color: CupertinoColors.activeBlue,
-          //     ),
-          //     onPressed: () {
-          //       setState(() {
-          //         _formType = _formType == SignOptions.signIn
-          //             ? SignOptions.signUp
-          //             : SignOptions.signIn;
-          //       });
-          //       _email.clear();
-          //       _password.clear();
-          //     }),
-          // _formType == SignOptions.signIn
-          //     ? CupertinoButton(
-          //         child: Text(
-          //           'Forget Password',
-          //           style: TextStyle(
-          //               fontFamily: 'SF-Pro-Text-Regular',
-          //               color: CupertinoColors.systemGrey),
-          //         ),
-          //         onPressed: () => forgetPass(context, auth, colorschema),
-          //         padding: EdgeInsets.only(top: 0.5),
-          //       )
-          //     : Text(''),
+          CupertinoButton(
+              padding: EdgeInsets.zero,
+              child: Text(secondaryText),
+              onPressed: () {
+                setState(() {
+                  _formType = _formType == SignOptions.signIn
+                      ? SignOptions.signUp
+                      : SignOptions.signIn;
+                });
+                _email.clear();
+                _password.clear();
+              }),
+          _formType == SignOptions.signIn
+              ? CupertinoButton(
+                  child: const Text("Forgot Password"),
+                  onPressed: () => forgetPass(context, auth),
+                  padding: const EdgeInsets.only(top: 0.5),
+                )
+              : const Text(''),
         ],
       ),
     );
@@ -157,6 +160,7 @@ class _SignInState extends State<SignIn> {
   }
 
   void forgetPass(BuildContext context, Auth auth) {
+    // ignore: unused_local_variable
     TextEditingController _emailForget = TextEditingController();
     showCupertinoDialog(
       context: context,
@@ -167,22 +171,23 @@ class _SignInState extends State<SignIn> {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12.0),
             ),
-            child: Container(
+            child: SizedBox(
               height: MediaQuery.of(context).size.height * 0.4,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  // HeadingText(
-                  //   text: 'Forget Password',
-                  // ),
-                  SizedBox(height: 15.0),
-                  // TextForms(
-                  //   isspin: isSpin,
-                  //   enter: _emailForget,
-                  //   placeholder: 'Email Address',
-                  //   hide: false,
-                  // ),
-                  SizedBox(height: 30.0),
+                  Text('Forgot Password',
+                      style: CupertinoTheme.of(context).textTheme.textStyle),
+                  const SizedBox(height: 15.0),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 18.0, vertical: 4.0),
+                    child: FormFeildApp(
+                      controller: _password,
+                      placeholder: "Password",
+                    ),
+                  ),
+                  const SizedBox(height: 30.0),
                   // CupertinoButton(
                   //     color: colorschema.buttonColor(),
                   //     child: GenralText(
@@ -207,13 +212,12 @@ class _SignInState extends State<SignIn> {
                   //             Provider.of<ColorManager>(context).textH1());
                   //       }
                   //     }),
-                  SizedBox(
+                  const SizedBox(
                     height: 8.0,
                   ),
                   CupertinoButton(
-                    child: Text(
+                    child: const Text(
                       ' Back ',
-                      style: TextStyle(color: CupertinoColors.activeBlue),
                     ),
                     onPressed: () => Navigator.pop(context),
                   )

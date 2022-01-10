@@ -14,17 +14,14 @@ class ColorPicker extends ChangeNotifier {
   }
 
   void switchmode() async {
+    final _ref = await SharedPreferences.getInstance();
     if (light) {
-      final _ref = await SharedPreferences.getInstance();
       light = false;
-
       _ref.setBool('mode', false);
-      notifyListeners();
     } else {
-      final _ref = await SharedPreferences.getInstance();
       light = true;
       _ref.setBool('mode', true);
-      notifyListeners();
     }
+    notifyListeners();
   }
 }

@@ -1,4 +1,3 @@
-import 'package:classroom/routes/settings.dart';
 import 'package:classroom/widgets/model_popups.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

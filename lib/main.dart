@@ -1,4 +1,8 @@
 import 'package:classroom/controllers/color_controllers.dart';
+import 'package:classroom/controllers/typography.dart';
+import 'package:classroom/routes/login.dart';
+import 'package:classroom/services/auth.dart';
+import 'package:classroom/widgets/loadingSpinner.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
@@ -18,6 +22,8 @@ void main() async {
   runApp(
     MultiProvider(providers: [
       ChangeNotifierProvider<ColorPicker>(create: (ctx) => ColorPicker()),
+      Provider<Auth>(create: (ctx) => Auth()),
+      Provider<TypoGraphyOfApp>(create: (ctx) => TypoGraphyOfApp()),
     ], child: const MyApp()),
   );
 }
@@ -28,7 +34,23 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return const HomePage();
+    return Consumer<Auth>(builder: (context, auth, _) {
+      return StreamBuilder<Object?>(
+        stream: auth.onAuthChange,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.active) {
+            final _user = snapshot.data;
+            if (_user == null) {
+              return const SignIn();
+            } else {
+              return const HomePage();
+            }
+          } else {
+            return loadingSpinner();
+          }
+        },
+      );
+    });
   }
 }
 

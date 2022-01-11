@@ -35,47 +35,34 @@ class _SignInState extends State<SignIn> {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Text('Classroom',
-              style:
-                  CupertinoTheme.of(context).textTheme.navLargeTitleTextStyle),
+          const Text(
+            'Classroom',
+            style: TextStyle(fontSize: 45),
+          ),
           SizedBox(
             height: MediaQuery.of(context).size.height * 0.06,
           ),
           Container(
             width: double.infinity,
           ),
-          Padding(
-            padding:
-                const EdgeInsets.symmetric(horizontal: 18.0, vertical: 4.0),
-            child: FormFeildApp(
-              controller: _email,
-              placeholder: "Email",
-            ),
+          FormFeildApp(
+            controller: _email,
+            placeholder: "Email",
           ),
-          const SizedBox(height: 8.0),
           //TextForm
-          Padding(
-            padding:
-                const EdgeInsets.symmetric(horizontal: 18.0, vertical: 4.0),
-            child: FormFeildApp(
-              controller: _password,
-              placeholder: "Password",
-              hide: true,
-            ),
+          FormFeildApp(
+            controller: _password,
+            placeholder: "Password",
+            hide: true,
           ),
-          const SizedBox(height: 8.0),
           _formType == SignOptions.signUp
-              ? Padding(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 18.0, vertical: 4.0),
-                  child: FormFeildApp(
-                    controller: _confirmPassword,
-                    placeholder: "Confirm Password",
-                    hide: true,
-                  ),
+              ? FormFeildApp(
+                  controller: _confirmPassword,
+                  placeholder: "Confirm Password",
+                  hide: true,
                 )
               : const Text(''),
-          const SizedBox(height: 15.0),
+          const SizedBox(height: 12.0),
           isSpin
               ? CupertinoButton.filled(
                   child: Text(primaryText),

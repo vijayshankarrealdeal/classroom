@@ -1,3 +1,5 @@
+import 'package:classroom/controllers/color_controllers.dart';
+import 'package:classroom/controllers/font_controller.dart';
 import 'package:classroom/routes/class_details.dart';
 import 'package:classroom/routes/see_discussion.dart';
 import 'package:classroom/widgets/model_popups.dart';
@@ -26,8 +28,8 @@ class HomeUI extends StatelessWidget {
             )
           ];
         },
-        body: Consumer<HomeController>(
-          builder: (context, data, _) {
+        body: Consumer3<HomeController, ColorPicker, FontsForApp>(
+          builder: (context, data, color, font, _) {
             return CustomScrollView(
               slivers: [
                 CupertinoSliverRefreshControl(
@@ -42,12 +44,19 @@ class HomeUI extends StatelessWidget {
                     (context, index) {
                       var _metadata = data.listdata[index];
                       return GestureDetector(
-                        onTap: () => Navigator.push(
-                          context,
+                        onTap: () =>
+                            Navigator.of(context, rootNavigator: true).push(
                           CupertinoPageRoute(
                             builder: (context) => const DiscussionText(),
                           ),
                         ),
+
+                        // Navigator.push(
+                        //   context,
+                        //   CupertinoPageRoute(
+                        //     builder: (context) => const DiscussionText(),
+                        //   ),
+                        // ),
                         child: Padding(
                           padding: const EdgeInsets.symmetric(
                               horizontal: 12.0, vertical: 8.0),
@@ -65,25 +74,16 @@ class HomeUI extends StatelessWidget {
                                     MainAxisAlignment.spaceBetween,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(
-                                    _metadata.topic,
-                                    style: CupertinoTheme.of(context)
-                                        .textTheme
-                                        .textStyle
-                                        .apply(fontSizeFactor: 2.5),
-                                  ),
+                                  font.headline1(_metadata.topic, color),
                                   Row(
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
                                     crossAxisAlignment:
                                         CrossAxisAlignment.center,
                                     children: [
-                                      Text(
-                                        "Members ${_metadata.studentenrollUid.length}",
-                                        style: CupertinoTheme.of(context)
-                                            .textTheme
-                                            .pickerTextStyle,
-                                      ),
+                                      font.body1(
+                                          "Members ${_metadata.studentenrollUid.length}",
+                                          color),
                                       CupertinoButton(
                                         child: Icon(CupertinoIcons.info_circle),
                                         onPressed: () => Navigator.push(

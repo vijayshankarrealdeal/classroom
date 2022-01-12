@@ -5,9 +5,11 @@ class FormFeildApp extends StatelessWidget {
   final bool hide;
   final String placeholder;
   final TextInputType type;
+  final Widget? suffix;
   final int maxlines;
   const FormFeildApp({
     Key? key,
+    this.suffix,
     this.maxlines = 1,
     required this.placeholder,
     this.type = TextInputType.multiline,
@@ -21,6 +23,7 @@ class FormFeildApp extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
       child: SizedBox(
         child: CupertinoTextField(
+          suffix: suffix,
           maxLines: maxlines,
           keyboardType: type,
           controller: controller,

@@ -1,11 +1,8 @@
 import 'package:classroom/controllers/color_controllers.dart';
-import 'package:classroom/controllers/data.dart';
-import 'package:classroom/model/database_users.dart';
-import 'package:classroom/routes/login.dart';
-import 'package:classroom/routes/user_info.dart';
+import 'package:classroom/controllers/font_controller.dart';
+import 'package:classroom/controllers/trends_controller.dart';
 import 'package:classroom/services/auth.dart';
 import 'package:classroom/services/db.dart';
-import 'package:classroom/widgets/loading_spinner.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
@@ -27,6 +24,7 @@ void main() async {
       providers: [
         ChangeNotifierProvider<ColorPicker>(create: (ctx) => ColorPicker()),
         Provider<Auth>(create: (ctx) => Auth()),
+        Provider<FontsForApp>(create: (ctx) => FontsForApp()),
       ],
       child: const MyApp(),
     ),
@@ -37,7 +35,7 @@ class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    return HomePage(
+    return const HomePage(
       email: '',
       uid: '',
     );
@@ -105,11 +103,13 @@ class _HomePageState extends State<HomePage> {
         ChangeNotifierProvider(
           create: (context) => HomeController(),
         ),
+        ChangeNotifierProvider(
+          create: (context) => TrendsController(),
+        ),
       ],
       child: Consumer2<Database, ColorPicker>(builder: (context, db, color, _) {
         return CupertinoApp(
           theme: CupertinoThemeData(
-            textTheme: const CupertinoTextThemeData(),
             brightness: color.light ? Brightness.light : Brightness.dark,
             primaryColor: CupertinoColors.systemBlue,
           ),

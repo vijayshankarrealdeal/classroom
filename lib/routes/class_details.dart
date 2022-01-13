@@ -1,5 +1,8 @@
-import 'package:classroom/controllers/data.dart';
+import 'package:classroom/controllers/color_controllers.dart';
+import 'package:classroom/controllers/font_controller.dart';
+import 'package:classroom/model/all_topics.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:provider/provider.dart';
 
 class ClassDetails extends StatelessWidget {
   final ClassDataStudent data;
@@ -9,6 +12,8 @@ class ClassDetails extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final font = Provider.of<FontsForApp>(context);
+    final color = Provider.of<ColorPicker>(context);
     return CupertinoPageScaffold(
       child: NestedScrollView(
         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
@@ -35,12 +40,18 @@ class ClassDetails extends StatelessWidget {
                 children: data.subtpoics.map((e) => Text(e)).toList(),
               ),
               const SizedBox(height: 30),
-              const Text("Student Enrolled "),
+            const  Text("Student Enrolled"),
+              font.headline1(data.studentenrollUid.length.toString(), color),
               const SizedBox(height: 5),
+              Text(
+                "Reviews",
+                style:
+                    CupertinoTheme.of(context).textTheme.navLargeTitleTextStyle,
+              ),
               Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: data.studentenrollUid.map((e) => Text(e)).toList(),
+                children: data.reviews.map((e) => Text(e)).toList(),
               ),
             ],
           ),

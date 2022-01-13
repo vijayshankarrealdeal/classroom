@@ -31,6 +31,7 @@ class _SignInState extends State<SignIn> {
     final auth = Provider.of<Auth>(context);
 
     return CupertinoPageScaffold(
+      backgroundColor: CupertinoTheme.of(context).scaffoldBackgroundColor,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -65,7 +66,12 @@ class _SignInState extends State<SignIn> {
           const SizedBox(height: 12.0),
           isSpin
               ? CupertinoButton.filled(
-                  child: Text(primaryText),
+                  child: Text(
+                    primaryText,
+                    style:const TextStyle(
+                      color: CupertinoColors.white,
+                    ),
+                  ),
                   onPressed: () => submit(_email.text.trim(), _password.text,
                       _confirmPassword.text, auth),
                 )

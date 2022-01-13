@@ -14,7 +14,7 @@ class UserInfoAdd extends ChangeNotifier {
   }
 
   bool uploadstart = false;
-  void save(Database db,  BuildContext context) async {
+  void save(Database db, BuildContext context) async {
     try {
       uploadstart = true;
       notifyListeners();
@@ -25,6 +25,8 @@ class UserInfoAdd extends ChangeNotifier {
       } else {
         await db.addUser(
           UserFromDatabase(
+            topicCreated: [],
+            topicEnrolled: [],
             name: name.text,
             email: db.email,
             uid: db.uid,

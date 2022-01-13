@@ -1,13 +1,15 @@
 import 'package:classroom/controllers/color_controllers.dart';
 import 'package:classroom/controllers/font_controller.dart';
-import 'package:classroom/controllers/trends_controller.dart';
+import 'package:classroom/model/database_users.dart';
+import 'package:classroom/routes/login.dart';
+import 'package:classroom/routes/user_info.dart';
 import 'package:classroom/services/auth.dart';
 import 'package:classroom/services/db.dart';
+import 'package:classroom/widgets/loading_spinner.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:classroom/controllers/home_controllers.dart';
 import 'package:classroom/views/home.dart';
 import 'package:classroom/views/account.dart';
 import 'package:classroom/views/trend.dart';
@@ -35,32 +37,35 @@ class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    return const HomePage(
-      email: '',
-      uid: '',
+    final auth = Provider.of<Auth>(context);
+    final color = Provider.of<ColorPicker>(context);
+    return StreamBuilder<User?>(
+      stream: auth.onAuthChange,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.active) {
+          final User? _user = snapshot.data;
+          if (_user == null) {
+            return CupertinoApp(
+              theme: CupertinoThemeData(
+                brightness: color.light ? Brightness.light : Brightness.dark,
+                primaryColor: CupertinoColors.systemBlue,
+              ),
+              home: const SignIn(),
+            );
+          } else {
+            return ChangeNotifierProvider<Database>(
+              create: (ctx) => Database(uid: _user.uid, email: _user.email),
+              child: HomePage(
+                email: _user.email,
+                uid: _user.uid,
+              ),
+            );
+          }
+        } else {
+          return loadingSpinner();
+        }
+      },
     );
-
-    // final auth = Provider.of<Auth>(context);
-    // return StreamBuilder<User?>(
-    //   stream: auth.onAuthChange,
-    //   builder: (context, snapshot) {
-    //     if (snapshot.connectionState == ConnectionState.active) {
-    //       final User? _user = snapshot.data;
-    //       if (_user == null) {
-    //         return const CupertinoApp(
-    //           home: SignIn(),
-    //         );
-    //       } else {
-    //         return HomePage(
-    //           email: _user.email,
-    //           uid: _user.uid,
-    //         );
-    //       }
-    //     } else {
-    //       return loadingSpinner();
-    //     }
-    //   },
-    // );
   }
 }
 
@@ -96,107 +101,66 @@ class _HomePageState extends State<HomePage> {
       const PlayListUI(),
       const TrendsUI(),
     ];
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider<Database>(
-            create: (ctx) => Database(uid: widget.uid, email: widget.email)),
-        ChangeNotifierProvider(
-          create: (context) => HomeController(),
+    return Consumer2<Database, ColorPicker>(builder: (context, db, color, _) {
+      return CupertinoApp(
+        theme: CupertinoThemeData(
+          brightness: color.light ? Brightness.light : Brightness.dark,
+          primaryColor: CupertinoColors.systemBlue,
         ),
-        ChangeNotifierProvider(
-          create: (context) => TrendsController(),
+        home: WillPopScope(
+          onWillPop: () async {
+            return !await listOfKeys[tabController.index]
+                .currentState!
+                .maybePop();
+          },
+          child: StreamBuilder<List<UserFromDatabase>>(
+              stream: db.userstream(),
+              builder: (context, usersnap) {
+                if (usersnap.hasData) {
+                  if (usersnap.data!.any((element) => element.uid == db.uid)) {
+                    return Provider<UserFromDatabase>.value(
+                      value: usersnap.data!
+                          .where((element) => element.uid == db.uid)
+                          .first,
+                      child: CupertinoTabScaffold(
+                        controller: tabController,
+                        tabBar: CupertinoTabBar(
+                          items: const <BottomNavigationBarItem>[
+                            BottomNavigationBarItem(
+                              icon: Icon(CupertinoIcons.home),
+                              label: 'Home',
+                            ),
+                            BottomNavigationBarItem(
+                              icon: Icon(CupertinoIcons.triangle),
+                              label: 'Trending',
+                            ),
+                            BottomNavigationBarItem(
+                              icon: Icon(CupertinoIcons.app_badge_fill),
+                              label: 'Notification',
+                            ),
+                          ],
+                        ),
+                        tabBuilder: (context, index) {
+                          return CupertinoTabView(
+                            builder: (BuildContext context) => CupertinoTabView(
+                              navigatorKey: listOfKeys[
+                                  index], //set navigatorKey here which was initialized before
+                              builder: (context) {
+                                return homeScreenList[index];
+                              },
+                            ),
+                          );
+                        },
+                      ),
+                    );
+                  } else {
+                    return const MakePage();
+                  }
+                }
+                return loadingSpinner();
+              }),
         ),
-      ],
-      child: Consumer2<Database, ColorPicker>(builder: (context, db, color, _) {
-        return CupertinoApp(
-          theme: CupertinoThemeData(
-            brightness: color.light ? Brightness.light : Brightness.dark,
-            primaryColor: CupertinoColors.systemBlue,
-          ),
-          home: WillPopScope(
-            onWillPop: () async {
-              return !await listOfKeys[tabController.index]
-                  .currentState!
-                  .maybePop();
-            },
-            child: CupertinoTabScaffold(
-              controller: tabController,
-              tabBar: CupertinoTabBar(
-                items: const <BottomNavigationBarItem>[
-                  BottomNavigationBarItem(
-                    icon: Icon(CupertinoIcons.home),
-                    label: 'Home',
-                  ),
-                  BottomNavigationBarItem(
-                    icon: Icon(CupertinoIcons.triangle),
-                    label: 'Trending',
-                  ),
-                  BottomNavigationBarItem(
-                    icon: Icon(CupertinoIcons.app_badge_fill),
-                    label: 'Notification',
-                  ),
-                ],
-              ),
-              tabBuilder: (context, index) {
-                return CupertinoTabView(
-                  builder: (BuildContext context) => CupertinoTabView(
-                    navigatorKey: listOfKeys[
-                        index], //set navigatorKey here which was initialized before
-                    builder: (context) {
-                      return homeScreenList[index];
-                    },
-                  ),
-                );
-              },
-            ),
-
-            //  StreamBuilder<List<UserFromDatabase>>(
-            //     stream: db.userstream(),
-            //     builder: (context, usersnap) {
-            //       if (usersnap.hasData) {
-            //         if (usersnap.data!
-            //             .any((element) => element.uid == db.uid)) {
-            //           return
-
-            //            CupertinoTabScaffold(
-            //             controller: tabController,
-            //             tabBar: CupertinoTabBar(
-            //               items: const <BottomNavigationBarItem>[
-            //                 BottomNavigationBarItem(
-            //                   icon: Icon(CupertinoIcons.home),
-            //                   label: 'Home',
-            //                 ),
-            //                 BottomNavigationBarItem(
-            //                   icon: Icon(CupertinoIcons.triangle),
-            //                   label: 'Trending',
-            //                 ),
-            //                 BottomNavigationBarItem(
-            //                   icon: Icon(CupertinoIcons.app_badge_fill),
-            //                   label: 'Notification',
-            //                 ),
-            //               ],
-            //             ),
-            //             tabBuilder: (context, index) {
-            //               return CupertinoTabView(
-            //                 builder: (BuildContext context) => CupertinoTabView(
-            //                   navigatorKey: listOfKeys[
-            //                       index], //set navigatorKey here which was initialized before
-            //                   builder: (context) {
-            //                     return homeScreenList[index];
-            //                   },
-            //                 ),
-            //               );
-            //             },
-            //           );
-            //         } else {
-            //           return const MakePage();
-            //         }
-            //       }
-            //       return loadingSpinner();
-            //     }),
-          ),
-        );
-      }),
-    );
+      );
+    });
   }
 }

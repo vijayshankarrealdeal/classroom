@@ -5,9 +5,11 @@ class ChatBubble extends StatelessWidget {
   const ChatBubble({
     Key? key,
     required this.text,
+    required this.ismentor,
     required this.isCurrentUser,
   }) : super(key: key);
   final String text;
+  final bool ismentor;
   final bool isCurrentUser;
 
   @override
@@ -26,7 +28,11 @@ class ChatBubble extends StatelessWidget {
         child: DecoratedBox(
           // chat bubble decoration
           decoration: BoxDecoration(
-            color: isCurrentUser ? CupertinoColors.activeBlue : Colors.grey[300],
+            color: isCurrentUser
+                ? CupertinoColors.activeBlue
+                : ismentor
+                    ? CupertinoColors.systemGreen
+                    : CupertinoColors.white,
             borderRadius: BorderRadius.circular(16),
           ),
           child: Padding(
@@ -34,7 +40,11 @@ class ChatBubble extends StatelessWidget {
             child: Text(
               text,
               style: Theme.of(context).textTheme.bodyText1!.copyWith(
-                  color: isCurrentUser ? Colors.white : Colors.black87),
+                  color: isCurrentUser
+                      ? Colors.white
+                      : ismentor
+                          ? CupertinoColors.white
+                          : Colors.black87),
             ),
           ),
         ),

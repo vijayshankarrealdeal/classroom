@@ -17,6 +17,13 @@ class RequestController extends ChangeNotifier {
     }
   }
 
+  void clearAll() {
+    name.clear();
+    about.clear();
+    request.clear();
+    topic.clear();
+  }
+
   @override
   void dispose() {
     name.dispose();

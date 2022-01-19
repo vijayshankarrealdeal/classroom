@@ -5,6 +5,7 @@ import 'package:classroom/model/database_users.dart';
 import 'package:classroom/services/db.dart';
 import 'package:classroom/widgets/loading_spinner.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class AddClassDetails extends StatelessWidget {
@@ -25,31 +26,12 @@ class AddClassDetails extends StatelessWidget {
               CupertinoSliverNavigationBar(
                 previousPageTitle: previoustile,
                 largeTitle: Text(data.topic),
-                trailing: user.isMentor
-                    ? null
-                    : db.load
-                        ? loadingSpinner()
-                        : CupertinoButton(
-                            padding: EdgeInsets.zero,
-                            child: data.studentenrollUid.contains(db.uid)
-                                ? font.body1("Remove", color)
-                                : font.body1("Join", color),
-                            onPressed: () async {
-                              if (data.studentenrollUid.contains(db.uid)) {
-                                await db.unenroll(data);
-                              } else {
-                                await db.enroll(data);
-                              }
-                            },
-                          ),
               )
             ];
           },
           body: Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
+            child: ListView(
               children: [
                 Text("Mentor " + data.mentorname),
                 const SizedBox(height: 30),
@@ -61,27 +43,69 @@ class AddClassDetails extends StatelessWidget {
                   children: data.subtpoics.map((e) => Text(e)).toList(),
                 ),
                 const SizedBox(height: 30),
-            const  Text("Student Enrolled"),
+                const Text("Student Enrolled"),
                 font.headline1(data.studentenrollUid.length.toString(), color),
                 const SizedBox(height: 5),
-                Text(
-                  "Reviews",
-                  style: CupertinoTheme.of(context)
-                      .textTheme
-                      .navLargeTitleTextStyle,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Reviews",
+                      style: CupertinoTheme.of(context)
+                          .textTheme
+                          .navLargeTitleTextStyle,
+                    ),
+                  ],
                 ),
-                Column(
+                ListView(
+                  physics: const NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
                   children: data.reviews
                       .map(
-                        (e) => Container(
-                          width: double.infinity,
-                          height: 50,
-                          color: CupertinoColors.systemPink,
-                          child: font.headline1(e, color),
+                        (e) => Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 4.0),
+                          child: Container(
+                            decoration: BoxDecoration(
+                                color: CupertinoColors.darkBackgroundGray,
+                                borderRadius: BorderRadius.circular(15)),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 4.0),
+                                    child: Row(
+                                      children: [
+                                        CircleAvatar(
+                                          radius: 15,
+                                          backgroundColor: Colors.blue.shade900,
+                                          child: Text(e['name']
+                                              .toString()
+                                              .substring(0, 1)
+                                              .toUpperCase()),
+                                        ),
+                                        const SizedBox(width: 5),
+                                        Column(
+                                          children: [
+                                            Text(e['name']),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  Text(e['message']),
+                                ],
+                              ),
+                            ),
+                          ),
                         ),
                       )
                       .toList(),
-                )
+                ),
               ],
             ),
           ),

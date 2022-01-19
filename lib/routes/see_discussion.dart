@@ -47,11 +47,19 @@ class DiscussionText extends StatelessWidget {
                         padding: const EdgeInsets.only(top: 10, bottom: 80),
                         physics: const NeverScrollableScrollPhysics(),
                         itemBuilder: (context, index) {
-                          return ChatBubble(
-                              ismentor: snapshot.data![index].ismentor,
-                              text: snapshot.data![index].text,
-                              isCurrentUser:
-                                  snapshot.data![index].uid == db.uid);
+                          return StreamBuilder<UserFromDatabase>(
+                            stream: db.userchat(snapshot.data![index].uid),
+                            builder: (context, user) {
+                              return user.hasData
+                                  ? ChatBubble(
+                                      username: user.data!.name,
+                                      ismentor: snapshot.data![index].ismentor,
+                                      text: snapshot.data![index].text,
+                                      isCurrentUser:
+                                          snapshot.data![index].uid == db.uid)
+                                  : const SizedBox();
+                            },
+                          );
                         },
                       ),
                       Align(

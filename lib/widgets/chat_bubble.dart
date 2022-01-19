@@ -1,17 +1,21 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:profanity_filter/profanity_filter.dart';
 
 class ChatBubble extends StatelessWidget {
-  const ChatBubble({
+  ChatBubble({
     Key? key,
     required this.text,
     required this.ismentor,
     required this.isCurrentUser,
+    required this.username,
   }) : super(key: key);
   final String text;
   final bool ismentor;
   final bool isCurrentUser;
+  final String username;
 
+  final filter = ProfanityFilter();
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -29,7 +33,9 @@ class ChatBubble extends StatelessWidget {
           // chat bubble decoration
           decoration: BoxDecoration(
             color: isCurrentUser
-                ? CupertinoColors.activeBlue
+                ? filter.hasProfanity(text)
+                    ? CupertinoColors.destructiveRed
+                    : CupertinoColors.activeBlue
                 : ismentor
                     ? CupertinoColors.systemGreen
                     : CupertinoColors.white,
@@ -37,14 +43,33 @@ class ChatBubble extends StatelessWidget {
           ),
           child: Padding(
             padding: const EdgeInsets.all(12),
-            child: Text(
-              text,
-              style: Theme.of(context).textTheme.bodyText1!.copyWith(
-                  color: isCurrentUser
-                      ? Colors.white
-                      : ismentor
-                          ? CupertinoColors.white
-                          : Colors.black87),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  username,
+                  style: TextStyle(
+                      fontSize: 17,
+                      fontWeight: FontWeight.bold,
+                      color: isCurrentUser
+                          ? Colors.purple.shade900
+                          : ismentor
+                              ? CupertinoColors.white
+                              : Colors.black87),
+                ),
+                Text(
+                  filter.hasProfanity(text)
+                      ? 'This is an inapporiate message.\n Please maintain discipline of class'
+                      : text,
+                  style: Theme.of(context).textTheme.bodyText1!.copyWith(
+                      color: isCurrentUser
+                          ? Colors.white
+                          : ismentor
+                              ? CupertinoColors.white
+                              : Colors.black87),
+                ),
+              ],
             ),
           ),
         ),

@@ -1,6 +1,7 @@
 import 'package:classroom/controllers/request.dart';
 import 'package:classroom/model/all_topics.dart';
 import 'package:classroom/model/database_users.dart';
+import 'package:classroom/model/notificaiton_req.dart';
 import 'package:classroom/services/db.dart';
 import 'package:classroom/widgets/error_dialog.dart';
 import 'package:classroom/widgets/loading_spinner.dart';
@@ -70,21 +71,37 @@ class MakeARequest extends StatelessWidget {
                             ),
                             onPressed: () async {
                               if (req.validate()) {
-                                final data = ClassDataStudent(
-                                  mentoruid: user.uid,
-                                  classX: req.name.text.toString(),
-                                  mentorname: user.name,
-                                  subtpoics: req.request.text.split('\n'),
-                                  reviews: [],
-                                  id: id,
-                                  studentenrollUid: [],
-                                  topic: req.topic.text,
-                                  classInfo: req.about.text,
-                                  time: Timestamp.now(),
-                                );
-                                await db.addNewClass(data);
-                                req.clearAll();
-                                errorAlert(context, "Topic Created");
+                                if (user.isMentor) {
+                                  final data = ClassDataStudent(
+                                    mentoruid: user.uid,
+                                    classX: req.name.text.toString(),
+                                    mentorname: user.name,
+                                    subtpoics: req.request.text.split('\n'),
+                                    reviews: [],
+                                    id: id,
+                                    studentenrollUid: [],
+                                    topic: req.topic.text,
+                                    classInfo: req.about.text,
+                                    time: Timestamp.now(),
+                                  );
+                                  await db.addNewClass(data);
+                                  req.clearAll();
+                                  errorAlert(context, "Topic Created");
+                                } else {
+                                  final data = Request(
+                                    requestemail: db.email,
+                                    id: const Uuid().v4(),
+                                    requestBy: db.uid,
+                                    classw: req.name.text,
+                                    chapter: req.topic.text,
+                                    request: req.request.text,
+                                    discription: req.about.text,
+                                    time: Timestamp.now(),
+                                  );
+                                  await db.addRequest(data);
+                                  req.clearAll();
+                                  errorAlert(context, "Topic Created");
+                                }
                               } else {
                                 errorAlert(context, "Fill All Fields");
                               }

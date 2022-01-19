@@ -102,6 +102,7 @@ class HomeUI extends StatelessWidget {
                                             CupertinoPageRoute(
                                               builder: (context) =>
                                                   ClassDetails(
+                                                user: user,
                                                 previoustile: "Classes",
                                                 data: _metadata,
                                               ),

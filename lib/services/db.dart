@@ -1,6 +1,9 @@
+import 'dart:math';
+
 import 'package:classroom/model/all_topics.dart';
 import 'package:classroom/model/chat_model.dart';
 import 'package:classroom/model/database_users.dart';
+import 'package:classroom/model/notificaiton_req.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -25,6 +28,30 @@ class Database extends ChangeNotifier {
         .set(data.toJson());
   }
 
+  Future<void> addRequest(Request data) async {
+    final _data = await _ref
+        .collection('users')
+        .where('classstudy', isEqualTo: data.classw)
+        .where('isMentor', isEqualTo: true)
+        .get();
+    List<String> _uids = [];
+    for (var element in _data.docs) {
+      element.data().forEach((key, value) {
+        if (key == 'uid') {
+          _uids.add(value);
+        }
+      });
+    }
+    final _random = Random();
+    var element = _uids[_random.nextInt(_uids.length)];
+    await _ref
+        .collection('users')
+        .doc(element)
+        .collection('notifications')
+        .doc()
+        .set(data.toJson());
+  }
+
   Future<void> addNewClass(ClassDataStudent data) async {
     load = true;
     notifyListeners();
@@ -41,6 +68,20 @@ class Database extends ChangeNotifier {
     });
     load = false;
     notifyListeners();
+  }
+
+  Future<void> addReview(
+      ClassDataStudent data, String name, String mess) async {
+    await _ref
+        .collection('allTopics')
+        .doc(data.classX)
+        .collection('topicscreted')
+        .doc(data.id)
+        .update({
+      'review': FieldValue.arrayUnion([
+        {'name': name, 'message': mess, 'uid': uid}
+      ])
+    });
   }
 
   Future<void> enroll(ClassDataStudent data) async {
@@ -153,5 +194,16 @@ class Database extends ChangeNotifier {
         .map((event) => event.docs
             .map((e) => UserFromDatabase.fromJson(e.data()))
             .toList());
+  }
+
+  Stream<UserFromDatabase> userchat(String uid_) {
+    return _ref
+        .collection('users')
+        .where('uid', isEqualTo: uid_)
+        .snapshots()
+        .map((event) => event.docs
+            .map((e) => UserFromDatabase.fromJson(e.data()))
+            .toList()
+            .first);
   }
 }

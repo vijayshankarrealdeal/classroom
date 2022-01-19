@@ -26,6 +26,17 @@ class ClassDataStudent extends ChangeNotifier {
     required this.time,
   });
 
+  List<String> _createIndex(String name) {
+    List<String> index = [];
+    int i = 0;
+    int j = 1;
+    while (j < name.length) {
+      index.add(name.substring(i, j).toLowerCase());
+      j++;
+    }
+    return index;
+  }
+
   Map<String, dynamic> toJson() {
     return {
       'topic': topic,
@@ -38,6 +49,7 @@ class ClassDataStudent extends ChangeNotifier {
       'classInfo': classInfo,
       'time': time,
       'class': classX,
+      'searchIndex': _createIndex(topic),
     };
   }
 

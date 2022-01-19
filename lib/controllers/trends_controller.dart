@@ -15,6 +15,13 @@ class TrendsController extends ChangeNotifier {
   TextEditingController search = TextEditingController();
   late StreamSubscription _controller;
 
+  void searchFor(UserFromDatabase user, Database db) {
+    db.search(user.classstudy, search.text).listen((event) {
+      tmpsearch = event;
+      notifyListeners();
+    });
+  }
+
   void getData(BuildContext context, UserFromDatabase user, Database db) {
     _controller = db.getAlltopics(user.classstudy).listen((event) {
       _stdu = event;

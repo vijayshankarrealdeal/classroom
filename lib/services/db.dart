@@ -97,6 +97,18 @@ class Database extends ChangeNotifier {
             .toList());
   }
 
+  Stream<List<ClassDataStudent>> search(String studentclass, String query) {
+    return _ref
+        .collection('allTopics')
+        .doc(studentclass)
+        .collection('topicscreted')
+        .where('searchIndex', arrayContains: query.toLowerCase())
+        .snapshots()
+        .map((event) => event.docs
+            .map((e) => ClassDataStudent.fromJson(e.data()))
+            .toList());
+  }
+
   Stream<List<ChatModelX>> classDiscuss(String classid) {
     return _ref
         .collection('chats')

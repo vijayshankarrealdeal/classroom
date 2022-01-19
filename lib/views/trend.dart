@@ -6,7 +6,6 @@ import 'package:classroom/routes/add_request.dart';
 import 'package:classroom/routes/add_request_class_details.dart';
 import 'package:classroom/services/db.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class PlayListUI extends StatelessWidget {
@@ -48,6 +47,7 @@ class PlayListUI extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: CupertinoSearchTextField(
+                    onChanged: (s) => trendsdata.searchFor(user, db),
                     controller: trendsdata.search,
                   ),
                 ),
@@ -129,7 +129,9 @@ class PlayListUI extends StatelessWidget {
                             ),
                           );
                         },
-                        itemCount: trendsdata.listdata.length,
+                        itemCount: trendsdata.search.text.isEmpty
+                            ? trendsdata.listdata.length
+                            : trendsdata.tmpsearch.length,
                       )
               ],
             );

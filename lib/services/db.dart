@@ -24,7 +24,7 @@ class Database extends ChangeNotifier {
         .collection('chats')
         .doc(classid)
         .collection('discuss')
-        .doc()
+        .doc(data.id)
         .set(data.toJson());
   }
 
@@ -205,5 +205,16 @@ class Database extends ChangeNotifier {
             .map((e) => UserFromDatabase.fromJson(e.data()))
             .toList()
             .first);
+  }
+
+  Stream<List<Request>> mentorNotification() {
+    return _ref
+        .collection('users')
+        .doc(uid)
+        .collection('notifications')
+        .orderBy('time')
+        .snapshots()
+        .map((event) =>
+            event.docs.map((e) => Request.fromJson(e.data())).toList());
   }
 }

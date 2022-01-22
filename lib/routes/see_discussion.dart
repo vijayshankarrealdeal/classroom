@@ -7,6 +7,7 @@ import 'package:classroom/widgets/text_form.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
+import 'package:uuid/uuid.dart';
 
 class DiscussionText extends StatelessWidget {
   final String classid;
@@ -86,6 +87,8 @@ class DiscussionText extends StatelessWidget {
                                     onPressed: () {
                                       db.addChat(
                                           ChatModelX(
+                                              id: const Uuid().v4(),
+                                              pin: false,
                                               ismentor: user.isMentor,
                                               text: message.text,
                                               time: Timestamp.now(),

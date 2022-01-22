@@ -1,9 +1,7 @@
 import 'package:classroom/controllers/color_controllers.dart';
 import 'package:classroom/controllers/font_controller.dart';
 import 'package:classroom/model/all_topics.dart';
-import 'package:classroom/model/database_users.dart';
-import 'package:classroom/services/db.dart';
-import 'package:classroom/widgets/loading_spinner.dart';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -15,8 +13,7 @@ class AddClassDetails extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final db = Provider.of<Database>(context);
-    final user = Provider.of<UserFromDatabase>(context);
+
     return Consumer3<ClassDataStudent, FontsForApp, ColorPicker>(
         builder: (context, data, font, color, _) {
       return CupertinoPageScaffold(

@@ -38,7 +38,7 @@ class AddReview extends StatelessWidget {
                 padding: const EdgeInsets.only(top: 10, bottom: 80),
                 physics: const NeverScrollableScrollPhysics(),
                 itemBuilder: (context, index) {
-                  return Container(
+                  return SizedBox(
                     child: Text(data.reviews[index]['uid'] == db.uid
                         ? data.reviews[index]['message']
                         : ""),

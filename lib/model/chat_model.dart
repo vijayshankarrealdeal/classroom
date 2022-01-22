@@ -5,15 +5,20 @@ class ChatModelX {
   final Timestamp time;
   final String uid;
   final bool ismentor;
-
+  final String id;
+  final bool pin;
   ChatModelX(
       {required this.text,
       required this.ismentor,
       required this.time,
+      required this.id,
+      required this.pin,
       required this.uid});
 
   Map<String, dynamic> toJson() {
     return {
+      'id': id,
+      'pin': pin,
       'text': text,
       "time": Timestamp.now(),
       "uid": uid,
@@ -23,6 +28,8 @@ class ChatModelX {
 
   factory ChatModelX.fromJson(Map<String, dynamic> data) {
     return ChatModelX(
+        id: data['id'],
+        pin: data['pin'],
         ismentor: data['ismentor'],
         text: data['text'],
         time: data['time'],

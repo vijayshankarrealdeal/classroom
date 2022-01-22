@@ -25,6 +25,8 @@ class UserInfoAdd extends ChangeNotifier {
       } else {
         await db.addUser(
           UserFromDatabase(
+            totalclass: 0,
+            weekreport: [],
             topicCreated: [],
             topicEnrolled: [],
             name: name.text,

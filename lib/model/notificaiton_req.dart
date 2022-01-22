@@ -35,7 +35,7 @@ class Request extends ChangeNotifier {
     };
   }
 
-  factory Request.toJson(Map<String, dynamic> data) {
+  factory Request.fromJson(Map<String, dynamic> data) {
     return Request(
         id: data['id'],
         requestemail: data['requestemail'],

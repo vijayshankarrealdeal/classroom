@@ -8,7 +8,6 @@ import 'package:classroom/services/db.dart';
 import 'package:classroom/widgets/loading_spinner.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -50,7 +49,11 @@ class MyApp extends StatelessWidget {
             return CupertinoApp(
               theme: CupertinoThemeData(
                 textTheme: CupertinoTextThemeData(
-                  textStyle: GoogleFonts.oswald(),
+                  textStyle: GoogleFonts.sourceSansPro(
+                    color: color.light
+                        ? CupertinoColors.white
+                        : CupertinoColors.black,
+                  ),
                 ),
                 brightness: color.light ? Brightness.light : Brightness.dark,
                 primaryColor: CupertinoColors.systemBlue,

@@ -60,7 +60,7 @@ class ChatBubble extends StatelessWidget {
                 ),
                 Text(
                   filter.hasProfanity(text)
-                      ? 'This is an inapporiate message.\n Please maintain discipline of class'
+                      ? 'This is an inappropriate message.\n Please maintain discipline of class'
                       : text,
                   style: Theme.of(context).textTheme.bodyText1!.copyWith(
                       color: isCurrentUser

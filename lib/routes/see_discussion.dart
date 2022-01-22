@@ -27,13 +27,6 @@ class DiscussionText extends StatefulWidget {
 }
 
 class _DiscussionTextState extends State<DiscussionText> {
-  File? getImages;
-  void removeImage() {
-    setState(() {
-      getImages = null;
-    });
-  }
-
   Future<String> _uploadImageToFirebase(File file) async {
     final _ref = FirebaseStorage.instance.ref('/userpost/');
     file = await _compressFile(file);
@@ -56,13 +49,21 @@ class _DiscussionTextState extends State<DiscussionText> {
     return result!;
   }
 
-  Future<void> pickCrop() async {
+  Future<void> pickCrop(Database db) async {
     final ImagePicker _picker = ImagePicker();
     final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
     final image_ = await _cropImage(File(image!.path));
-    setState(() {
-      getImages = image_;
-    });
+    final url = await _uploadImageToFirebase(image_);
+    db.addChat(
+        ChatModelX(
+            media: url,
+            id: const Uuid().v4(),
+            pin: false,
+            ismentor: widget.user.isMentor,
+            text: '',
+            time: Timestamp.now(),
+            uid: db.uid),
+        widget.classid);
   }
 
   Future<File> _cropImage(File imageFile) async {
@@ -70,7 +71,6 @@ class _DiscussionTextState extends State<DiscussionText> {
       sourcePath: imageFile.path,
       aspectRatioPresets: [
         CropAspectRatioPreset.square,
-        CropAspectRatioPreset.ratio4x3,
       ],
       androidUiSettings: const AndroidUiSettings(
           toolbarTitle: 'Cropper',
@@ -144,6 +144,7 @@ class _DiscussionTextState extends State<DiscussionText> {
                                         }
                                       },
                                       child: ChatBubble(
+                                          media: snapshot.data![index].media,
                                           ispin: snapshot.data![index].pin,
                                           username: user.data!.name,
                                           ismentor:
@@ -168,7 +169,7 @@ class _DiscussionTextState extends State<DiscussionText> {
                               CupertinoButton(
                                 padding: EdgeInsets.zero,
                                 onPressed: () {
-                                  pickCrop();
+                                  pickCrop(db);
                                 },
                                 child: const Icon(
                                   CupertinoIcons.add,

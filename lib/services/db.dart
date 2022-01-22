@@ -28,6 +28,15 @@ class Database extends ChangeNotifier {
         .set(data.toJson());
   }
 
+  Future<void> updatePin(ChatModelX data, String classid) async {
+    await _ref
+        .collection('chats')
+        .doc(classid)
+        .collection('discuss')
+        .doc(data.id)
+        .update({'pin': !data.pin});
+  }
+
   Future<void> addRequest(Request data) async {
     final _data = await _ref
         .collection('users')

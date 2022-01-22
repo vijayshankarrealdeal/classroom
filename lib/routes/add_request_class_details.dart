@@ -1,6 +1,8 @@
 import 'package:classroom/controllers/color_controllers.dart';
 import 'package:classroom/controllers/font_controller.dart';
 import 'package:classroom/model/all_topics.dart';
+import 'package:classroom/model/database_users.dart';
+import 'package:classroom/services/db.dart';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -13,9 +15,8 @@ class AddClassDetails extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
-    return Consumer3<ClassDataStudent, FontsForApp, ColorPicker>(
-        builder: (context, data, font, color, _) {
+    return Consumer5<ClassDataStudent, UserFromDatabase, Database, FontsForApp,
+        ColorPicker>(builder: (context, data, user, db, font, color, _) {
       return CupertinoPageScaffold(
         child: NestedScrollView(
           headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
@@ -23,7 +24,19 @@ class AddClassDetails extends StatelessWidget {
               CupertinoSliverNavigationBar(
                 previousPageTitle: previoustile,
                 largeTitle: Text(data.topic),
-              )
+                trailing: !user.isMentor
+                    ? CupertinoButton(
+                        padding: EdgeInsets.zero,
+                        child: data.studentenrollUid.contains(db.uid)
+                            ? const Text("Remove")
+                            : const Text("Join"),
+                        onPressed: () {
+                          !data.studentenrollUid.contains(db.uid)
+                              ? db.enroll(data)
+                              : db.unenroll(data);
+                        })
+                    : null,
+              ),
             ];
           },
           body: Padding(

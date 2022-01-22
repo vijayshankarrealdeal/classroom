@@ -42,14 +42,6 @@ class TrendsUI extends StatelessWidget {
           return <Widget>[
             CupertinoSliverNavigationBar(
               largeTitle: const Text('Notification'),
-              trailing: CupertinoButton(
-                  padding: EdgeInsets.zero,
-                  child: const Text('Logout'),
-                  onPressed: () => logout(
-                        context,
-                        "You Have Sign in again",
-                        Provider.of<Auth>(context, listen: false),
-                      )),
             )
           ];
         },
@@ -190,34 +182,40 @@ class TrendsUI extends StatelessWidget {
                               ),
                             ),
                           ),
+                          SfCircularChart(
+                            title: ChartTitle(
+                              text: "Discussion In Each Topic",
+                              textStyle: Theme.of(context)
+                                  .textTheme
+                                  .bodyText1!
+                                  .copyWith(
+                                      color: CupertinoTheme.of(context)
+                                          .primaryColor),
+                            ),
+                            legend: Legend(
+                              isVisible: true,
+                              textStyle: Theme.of(context)
+                                  .textTheme
+                                  .bodyText1!
+                                  .copyWith(
+                                      color: CupertinoTheme.of(context)
+                                          .primaryColor),
+                            ),
+                            series: [
+                              PieSeries(
+                                dataSource: p,
+                                xValueMapper: (data, _) => data.className,
+                                yValueMapper: (data, _) =>
+                                    data.numberofDiscussion,
+                                dataLabelSettings:
+                                    const DataLabelSettings(isVisible: true),
+                              ),
+                            ],
+                          ),
                         ],
                       ),
                     ),
                   ),
-            SfCircularChart(
-              title: ChartTitle(
-                text: "Discussion In Each Topic",
-                textStyle: Theme.of(context)
-                    .textTheme
-                    .bodyText1!
-                    .copyWith(color: CupertinoTheme.of(context).primaryColor),
-              ),
-              legend: Legend(
-                isVisible: true,
-                textStyle: Theme.of(context)
-                    .textTheme
-                    .bodyText1!
-                    .copyWith(color: CupertinoTheme.of(context).primaryColor),
-              ),
-              series: [
-                PieSeries(
-                  dataSource: p,
-                  xValueMapper: (data, _) => data.className,
-                  yValueMapper: (data, _) => data.numberofDiscussion,
-                  dataLabelSettings: const DataLabelSettings(isVisible: true),
-                ),
-              ],
-            ),
           ],
         ),
       ),

@@ -41,6 +41,9 @@ dependencies:
   profanity_filter: ^2.0.0
   fl_chart: ^0.41.0
   syncfusion_flutter_charts: ^19.4.43
+  image_picker: 
+  image_cropper: 
+  flutter_image_compress:
 
 
   # The following adds the Cupertino Icons font to your application.

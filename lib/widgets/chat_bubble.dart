@@ -9,11 +9,13 @@ class ChatBubble extends StatelessWidget {
     required this.ismentor,
     required this.isCurrentUser,
     required this.username,
+    required this.ispin,
   }) : super(key: key);
   final String text;
   final bool ismentor;
   final bool isCurrentUser;
   final String username;
+  final bool ispin;
 
   final filter = ProfanityFilter();
   @override
@@ -35,39 +37,58 @@ class ChatBubble extends StatelessWidget {
             color: isCurrentUser
                 ? filter.hasProfanity(text)
                     ? CupertinoColors.destructiveRed
-                    : CupertinoColors.activeBlue
+                    : ispin
+                        ? CupertinoColors.systemPink
+                        : CupertinoColors.activeBlue
                 : ismentor
-                    ? CupertinoColors.systemGreen
-                    : CupertinoColors.white,
+                    ? ispin
+                        ? CupertinoColors.systemYellow
+                        : CupertinoColors.systemGreen
+                    : filter.hasProfanity(text)
+                        ? CupertinoColors.destructiveRed
+                        : CupertinoColors.white,
             borderRadius: BorderRadius.circular(16),
           ),
           child: Padding(
             padding: const EdgeInsets.all(12),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              crossAxisAlignment: CrossAxisAlignment.start,
+            child: Stack(
               children: [
-                Text(
-                  username,
-                  style: TextStyle(
-                      fontSize: 17,
-                      fontWeight: FontWeight.bold,
-                      color: isCurrentUser
-                          ? Colors.purple.shade900
-                          : ismentor
-                              ? CupertinoColors.white
-                              : Colors.black87),
-                ),
-                Text(
-                  filter.hasProfanity(text)
-                      ? 'This is an inappropriate message.\n Please maintain discipline of class'
-                      : text,
-                  style: Theme.of(context).textTheme.bodyText1!.copyWith(
-                      color: isCurrentUser
-                          ? Colors.white
-                          : ismentor
-                              ? CupertinoColors.white
-                              : Colors.black87),
+                ispin
+                    ? const Align(
+                        alignment: Alignment.topRight,
+                        child: Icon(
+                          CupertinoIcons.pin,
+                          color: Colors.black,
+                        ),
+                      )
+                    : SizedBox(),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      username,
+                      style: TextStyle(
+                          fontSize: 17,
+                          fontWeight: FontWeight.bold,
+                          color: isCurrentUser
+                              ? Colors.purple.shade900
+                              : ismentor
+                                  ? CupertinoColors.white
+                                  : Colors.black87),
+                    ),
+                    Text(
+                      filter.hasProfanity(text)
+                          ? 'This is an inappropriate message.\n Please maintain discipline of class'
+                          : text,
+                      style: Theme.of(context).textTheme.bodyText1!.copyWith(
+                          color: isCurrentUser
+                              ? Colors.white
+                              : ismentor
+                                  ? CupertinoColors.white
+                                  : Colors.black87),
+                    ),
+                  ],
                 ),
               ],
             ),

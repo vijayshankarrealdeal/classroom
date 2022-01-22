@@ -6,9 +6,11 @@ class ChatModelX {
   final String uid;
   final bool ismentor;
   final String id;
+  final String media;
   final bool pin;
   ChatModelX(
       {required this.text,
+      required this.media,
       required this.ismentor,
       required this.time,
       required this.id,
@@ -20,6 +22,7 @@ class ChatModelX {
       'id': id,
       'pin': pin,
       'text': text,
+      "media": media,
       "time": Timestamp.now(),
       "uid": uid,
       "ismentor": ismentor,
@@ -28,6 +31,7 @@ class ChatModelX {
 
   factory ChatModelX.fromJson(Map<String, dynamic> data) {
     return ChatModelX(
+        media: data['media'] ?? '',
         id: data['id'],
         pin: data['pin'],
         ismentor: data['ismentor'],

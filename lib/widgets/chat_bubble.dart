@@ -1,7 +1,11 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:classroom/controllers/color_controllers.dart';
+import 'package:classroom/controllers/font_controller.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:profanity_filter/profanity_filter.dart';
+import 'package:provider/provider.dart';
 
 class ChatBubble extends StatelessWidget {
   ChatBubble({
@@ -23,6 +27,9 @@ class ChatBubble extends StatelessWidget {
   final filter = ProfanityFilter();
   @override
   Widget build(BuildContext context) {
+    final font = Provider.of<TypoGraphyOfApp>(context);
+    final color = Provider.of<ColorPicker>(context);
+
     return Padding(
       // asymmetric padding
       padding: EdgeInsets.fromLTRB(
@@ -41,7 +48,7 @@ class ChatBubble extends StatelessWidget {
                 ? filter.hasProfanity(text)
                     ? CupertinoColors.destructiveRed
                     : ispin
-                        ? CupertinoColors.systemPink
+                        ? CupertinoColors.darkBackgroundGray
                         : media.isNotEmpty
                             ? CupertinoColors.darkBackgroundGray
                             : CupertinoColors.activeBlue
@@ -61,17 +68,8 @@ class ChatBubble extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        username,
-                        style: TextStyle(
-                            fontSize: 17,
-                            fontWeight: FontWeight.bold,
-                            color: isCurrentUser
-                                ? Colors.purple.shade900
-                                : ismentor
-                                    ? CupertinoColors.white
-                                    : Colors.black87),
-                      ),
+                      font.heading5(
+                          username, CupertinoColors.darkBackgroundGray),
                       CachedNetworkImage(
                         imageUrl: media,
                         fit: BoxFit.cover,
@@ -84,40 +82,37 @@ class ChatBubble extends StatelessWidget {
                   child: Stack(
                     children: [
                       ispin
-                          ? const Align(
+                          ? Align(
                               alignment: Alignment.topRight,
                               child: Icon(
                                 CupertinoIcons.pin,
-                                color: Colors.black,
+                                color: color.textColor(),
                               ),
                             )
-                          : SizedBox(),
+                          : const SizedBox(),
                       Column(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            username,
-                            style: TextStyle(
-                                fontSize: 17,
-                                fontWeight: FontWeight.bold,
-                                color: isCurrentUser
-                                    ? Colors.purple.shade900
-                                    : ismentor
-                                        ? CupertinoColors.white
-                                        : Colors.black87),
-                          ),
+                          font.heading5(
+                              username,
+                              !isCurrentUser
+                                  ? CupertinoColors.darkBackgroundGray
+                                  : color.textColor()),
                           Text(
                             filter.hasProfanity(text)
                                 ? 'This is an inappropriate message.\n Please maintain discipline of class'
                                 : text,
-                            style:
-                                Theme.of(context).textTheme.bodyText1!.copyWith(
-                                    color: isCurrentUser
-                                        ? Colors.white
-                                        : ismentor
-                                            ? CupertinoColors.white
-                                            : Colors.black87),
+                            style: GoogleFonts.sourceSansPro(
+                                color: isCurrentUser
+                                    ? Colors.white
+                                    : ismentor
+                                        ? CupertinoColors.white
+                                        : Colors.black87,
+                                fontSize: 15,
+                                decoration: TextDecoration.none,
+                                fontWeight: FontWeight.w400,
+                                letterSpacing: 0.5),
                           ),
                         ],
                       ),

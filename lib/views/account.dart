@@ -8,6 +8,7 @@ import 'package:classroom/widgets/error_dialog.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
@@ -24,7 +25,7 @@ class TrendsUI extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final font = Provider.of<FontsForApp>(context);
+    final font = Provider.of<TypoGraphyOfApp>(context);
     final color = Provider.of<ColorPicker>(context);
     final user = Provider.of<UserFromDatabase>(context);
 
@@ -39,9 +40,9 @@ class TrendsUI extends StatelessWidget {
     return CupertinoPageScaffold(
       child: NestedScrollView(
         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
-          return <Widget>[
+          return const [
             CupertinoSliverNavigationBar(
-              largeTitle: const Text('Notification'),
+              largeTitle: Text('Notification'),
             )
           ];
         },
@@ -56,35 +57,30 @@ class TrendsUI extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     CircleAvatar(
-                      child: Text(
-                        user.name.substring(0, 1),
-                        style: CupertinoTheme.of(context)
-                            .textTheme
-                            .navLargeTitleTextStyle
-                            .copyWith(
-                              fontSize: 58,
-                            ),
+                      child: Center(
+                        child: font.heading2(
+                            user.name.substring(0, 1), color.onlyWhite()),
                       ),
                       backgroundColor: CupertinoColors.activeBlue,
-                      radius: 50,
+                      radius: 45,
                     ),
                     const SizedBox(width: 30),
-                    font.headline1(user.name, color),
+                    font.heading4(user.name, color.textColor()),
                     const SizedBox(width: 30),
                     Align(
                         alignment: Alignment.bottomLeft,
                         child: font.body1(
                             "Classes Enrolled " +
                                 user.topicEnrolled!.length.toString(),
-                            color))
+                            color.textColor()))
                   ],
                 ),
               ),
             ),
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: font.headline1(
-                  user.isMentor ? "Requests" : "Your Stats", color),
+              child: font.heading4(
+                  user.isMentor ? "Requests" : "Your Stats", color.textColor()),
             ),
             user.isMentor
                 ? Consumer<Database>(builder: (context, db, _) {
@@ -104,20 +100,40 @@ class TrendsUI extends StatelessWidget {
                                         decoration: BoxDecoration(
                                           borderRadius:
                                               BorderRadius.circular(15),
-                                          color: CupertinoColors.activeGreen,
+                                          color: color.cardColor(),
                                         ),
                                         child: Padding(
-                                          padding: const EdgeInsets.all(8.0),
+                                          padding: const EdgeInsets.all(12.0),
                                           child: Column(
                                             mainAxisAlignment:
                                                 MainAxisAlignment.start,
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.start,
                                             children: [
-                                              Text("By " + _data.requestemail),
-                                              Text(_data.chapter),
-                                              Text(_data.request),
-                                              Text(_data.discription)
+                                              font.subTitle1(
+                                                "By " + _data.requestemail,
+                                                color.textColor(),
+                                              ),
+                                              Padding(
+                                                padding: const EdgeInsets.only(
+                                                    right: 58.0,
+                                                    top: 4,
+                                                    bottom: 4),
+                                                child: Divider(
+                                                    height: 2,
+                                                    color: color.onlyBlack()),
+                                              ),
+                                              font.heading6(
+                                                  "Chapter${_data.chapter}",
+                                                  color.textColor()),
+                                              font.body1(
+                                                _data.request,
+                                                color.textColor(),
+                                              ),
+                                              font.body2(
+                                                _data.discription,
+                                                color.textColor(),
+                                              )
                                             ],
                                           ),
                                         ),
@@ -138,10 +154,8 @@ class TrendsUI extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          Text("Weekly Report Of Studying Hr",
-                              style: CupertinoTheme.of(context)
-                                  .textTheme
-                                  .textStyle),
+                          font.heading6("Weekly Report Of Studying Hr",
+                              color.textColor()),
                           const SizedBox(height: 5),
                           SizedBox(
                             height: 400,
@@ -185,21 +199,19 @@ class TrendsUI extends StatelessWidget {
                           SfCircularChart(
                             title: ChartTitle(
                               text: "Discussion In Each Topic",
-                              textStyle: Theme.of(context)
-                                  .textTheme
-                                  .bodyText1!
-                                  .copyWith(
-                                      color: CupertinoTheme.of(context)
-                                          .primaryColor),
+                              textStyle: GoogleFonts.sourceSansPro(
+                                  decoration: TextDecoration.none,
+                                  color: color.textColor(),
+                                  fontSize: 17,
+                                  fontWeight: FontWeight.w500,
+                                  letterSpacing: 0.15),
                             ),
                             legend: Legend(
                               isVisible: true,
                               textStyle: Theme.of(context)
                                   .textTheme
                                   .bodyText1!
-                                  .copyWith(
-                                      color: CupertinoTheme.of(context)
-                                          .primaryColor),
+                                  .copyWith(color: color.textColor()),
                             ),
                             series: [
                               PieSeries(

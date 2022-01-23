@@ -1,4 +1,6 @@
 import 'dart:ui';
+import 'package:classroom/controllers/color_controllers.dart';
+import 'package:classroom/controllers/font_controller.dart';
 import 'package:classroom/widgets/loading_spinner.dart';
 import 'package:classroom/widgets/text_form.dart';
 import 'package:flutter/cupertino.dart';
@@ -29,17 +31,15 @@ class _SignInState extends State<SignIn> {
         ? "Need a Account ? Sign Up"
         : "Already Have An Account";
     final auth = Provider.of<Auth>(context);
-
+    final fonts = Provider.of<TypoGraphyOfApp>(context);
+    final color = Provider.of<ColorPicker>(context);
     return CupertinoPageScaffold(
       backgroundColor: CupertinoTheme.of(context).scaffoldBackgroundColor,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          const Text(
-            'Classroom',
-            style: TextStyle(fontSize: 45),
-          ),
+          fonts.heading2('Classroom', color.textColor()),
           SizedBox(
             height: MediaQuery.of(context).size.height * 0.06,
           ),
@@ -68,7 +68,7 @@ class _SignInState extends State<SignIn> {
               ? CupertinoButton.filled(
                   child: Text(
                     primaryText,
-                    style:const TextStyle(
+                    style: const TextStyle(
                       color: CupertinoColors.white,
                     ),
                   ),
@@ -160,7 +160,7 @@ class _SignInState extends State<SignIn> {
       builder: (BuildContext context) => BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 2.0, sigmaY: 2.0),
         child: Dialog(
-            // backgroundColor: Provider.of<ColorManager>(context).scaffoldColor(),
+            backgroundColor: CupertinoTheme.of(context).scaffoldBackgroundColor,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12.0),
             ),

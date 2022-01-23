@@ -40,7 +40,7 @@ class PlayListUI extends StatelessWidget {
         },
         body: ChangeNotifierProvider<TrendsController>(
           create: (context) => TrendsController(context, user, db),
-          child: Consumer3<TrendsController, FontsForApp, ColorPicker>(
+          child: Consumer3<TrendsController, TypoGraphyOfApp, ColorPicker>(
               builder: (context, trendsdata, fonts, color, _) {
             return ListView(
               children: [
@@ -96,13 +96,8 @@ class PlayListUI extends StatelessWidget {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      Text(
-                                        _metadata.topic,
-                                        style: CupertinoTheme.of(context)
-                                            .textTheme
-                                            .textStyle
-                                            .apply(fontSizeFactor: 2.5),
-                                      ),
+                                      fonts.heading2(
+                                          _metadata.topic, color.textColor()),
                                       Row(
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceBetween,
@@ -110,14 +105,10 @@ class PlayListUI extends StatelessWidget {
                                           _metadata.studentenrollUid.isEmpty
                                               ? fonts.body1(
                                                   "Be The First to enroll",
-                                                  color)
-                                              : Text(
+                                                  color.textColor())
+                                              : fonts.subTitle1(
                                                   "${_metadata.studentenrollUid.length} Members already in",
-                                                  style:
-                                                      CupertinoTheme.of(context)
-                                                          .textTheme
-                                                          .pickerTextStyle,
-                                                ),
+                                                  color.textColor()),
                                           const Icon(
                                               CupertinoIcons.checkmark_seal),
                                         ],

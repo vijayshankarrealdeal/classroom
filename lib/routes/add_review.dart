@@ -24,7 +24,7 @@ class AddReview extends StatelessWidget {
           return <Widget>[
             const CupertinoSliverNavigationBar(
               previousPageTitle: "",
-              largeTitle: Text('add Review'),
+              largeTitle: Text('Add Review'),
             )
           ];
         },

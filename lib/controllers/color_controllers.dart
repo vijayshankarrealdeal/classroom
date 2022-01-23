@@ -39,4 +39,76 @@ class ColorPicker extends ChangeNotifier {
     }
     notifyListeners();
   }
+
+  Color cardColor() {
+    if (light) {
+      return CupertinoColors.lightBackgroundGray;
+    } else {
+      return CupertinoColors.darkBackgroundGray;
+    }
+  }
+
+  Color onlyBlue() {
+    if (!light) {
+      return const Color.fromRGBO(0, 122, 255, 1);
+    } else {
+      return const Color.fromRGBO(10, 132, 255, 1);
+    }
+  }
+
+  Color purple() {
+    if (!light) {
+      return const Color(0xffAF52DE);
+    } else {
+      return const Color(0xffBF5AF2);
+    }
+  }
+
+  Color nowarning() {
+    if (!light) {
+      return const Color.fromRGBO(52, 199, 89, 1);
+    } else {
+      return const Color.fromRGBO(50, 215, 75, 1);
+    }
+  }
+
+  Color textColor() {
+    if (!light) {
+      return CupertinoColors.white;
+    } else {
+      return CupertinoColors.black;
+    }
+  }
+
+  Color onlyWhite() {
+    if (!light) {
+      return CupertinoColors.white;
+    } else {
+      return CupertinoColors.white;
+    }
+  }
+
+  Color onlyBlack() {
+    if (!light) {
+      return CupertinoColors.black;
+    } else {
+      return CupertinoColors.black;
+    }
+  }
+
+  Color yellow() {
+    if (!light) {
+      return const Color(0xffFFCC00);
+    } else {
+      return const Color(0xffFFD60A);
+    }
+  }
+
+  Color orange() {
+    if (!light) {
+      return const Color(0xffFF9500);
+    } else {
+      return const Color(0xffFF9F0A);
+    }
+  }
 }

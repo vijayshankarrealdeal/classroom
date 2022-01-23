@@ -1,15 +1,21 @@
+import 'package:classroom/controllers/color_controllers.dart';
+import 'package:classroom/controllers/font_controller.dart';
 import 'package:classroom/routes/settings.dart';
 import 'package:classroom/services/auth.dart';
 import 'package:classroom/widgets/error_dialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 
-Future<void> showmodelpop(BuildContext context) async {
+Future<void> showmodelpop(
+  BuildContext context,
+) async {
   showCupertinoModalPopup(
     context: context,
     builder: (context) {
+      final font = Provider.of<TypoGraphyOfApp>(context);
+      final colorPicker = Provider.of<ColorPicker>(context);
       return CupertinoActionSheet(
-        title: const Text("User Action"),
+        title: font.subTitle1("User Action", colorPicker.textColor()),
         actions: [
           CupertinoActionSheetAction(
             onPressed: () {

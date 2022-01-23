@@ -27,7 +27,7 @@ void main() async {
       providers: [
         ChangeNotifierProvider<ColorPicker>(create: (ctx) => ColorPicker()),
         Provider<Auth>(create: (ctx) => Auth()),
-        Provider<FontsForApp>(create: (ctx) => FontsForApp()),
+        Provider<TypoGraphyOfApp>(create: (ctx) => TypoGraphyOfApp()),
       ],
       child: const MyApp(),
     ),
@@ -48,13 +48,6 @@ class MyApp extends StatelessWidget {
           if (_user == null) {
             return CupertinoApp(
               theme: CupertinoThemeData(
-                textTheme: CupertinoTextThemeData(
-                  textStyle: GoogleFonts.sourceSansPro(
-                    color: color.light
-                        ? CupertinoColors.white
-                        : CupertinoColors.black,
-                  ),
-                ),
                 brightness: color.light ? Brightness.light : Brightness.dark,
                 primaryColor: CupertinoColors.systemBlue,
               ),

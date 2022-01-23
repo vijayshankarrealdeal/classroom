@@ -15,7 +15,11 @@ class AddClassDetails extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer5<ClassDataStudent, UserFromDatabase, Database, FontsForApp,
+    return Consumer5<
+        ClassDataStudent,
+        UserFromDatabase,
+        Database,
+        TypoGraphyOfApp,
         ColorPicker>(builder: (context, data, user, db, font, color, _) {
       return CupertinoPageScaffold(
         child: NestedScrollView(
@@ -43,28 +47,29 @@ class AddClassDetails extends StatelessWidget {
             padding: const EdgeInsets.all(8.0),
             child: ListView(
               children: [
-                Text("Mentor " + data.mentorname),
+                font.heading6("Mentor " + data.mentorname, color.textColor()),
                 const SizedBox(height: 30),
-                const Text("Subtopics"),
+                font.heading6("Subtopics", color.textColor()),
                 const SizedBox(height: 5),
                 Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: data.subtpoics.map((e) => Text(e)).toList(),
+                  children: data.subtpoics
+                      .map((e) => font.body1(e, color.textColor()))
+                      .toList(),
                 ),
                 const SizedBox(height: 30),
-                const Text("Student Enrolled"),
-                font.headline1(data.studentenrollUid.length.toString(), color),
+                font.heading6("Student Enrolled", color.textColor()),
+                font.heading5(
+                    data.studentenrollUid.length.toString(), color.textColor()),
                 const SizedBox(height: 5),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
+                    font.heading4(
                       "Reviews",
-                      style: CupertinoTheme.of(context)
-                          .textTheme
-                          .navLargeTitleTextStyle,
+                      color.textColor(),
                     ),
                   ],
                 ),
@@ -101,13 +106,14 @@ class AddClassDetails extends StatelessWidget {
                                         const SizedBox(width: 5),
                                         Column(
                                           children: [
-                                            Text(e['name']),
+                                            font.subTitle1(
+                                                e['name'], color.textColor()),
                                           ],
                                         ),
                                       ],
                                     ),
                                   ),
-                                  Text(e['message']),
+                                  font.body1(e['message'], color.textColor()),
                                 ],
                               ),
                             ),

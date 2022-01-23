@@ -35,7 +35,7 @@ class HomeUI extends StatelessWidget {
         },
         body: ChangeNotifierProvider<HomeController>(
           create: (ctx) => HomeController(db, context),
-          child: Consumer3<HomeController, ColorPicker, FontsForApp>(
+          child: Consumer3<HomeController, ColorPicker, TypoGraphyOfApp>(
             builder: (context, data, color, font, _) {
               return CustomScrollView(
                 slivers: [
@@ -84,16 +84,17 @@ class HomeUI extends StatelessWidget {
                                       MainAxisAlignment.spaceBetween,
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    font.headline1(_metadata.topic, color),
+                                    font.heading2(
+                                        _metadata.topic, color.textColor()),
                                     Row(
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
                                       crossAxisAlignment:
                                           CrossAxisAlignment.center,
                                       children: [
-                                        font.body1(
+                                        font.subTitle1(
                                             "Members ${_metadata.studentenrollUid.length}",
-                                            color),
+                                            color.textColor()),
                                         CupertinoButton(
                                           child: const Icon(
                                               CupertinoIcons.info_circle),

@@ -166,8 +166,11 @@ class Database extends ChangeNotifier {
         .collection('discuss')
         .orderBy('time', descending: true)
         .snapshots()
-        .map((event) =>
-            event.docs.map((e) => ChatModelX.fromJson(e.data())).toList());
+        .map((event) => event.docs
+            .map((e) => ChatModelX.fromJson(e.data()))
+            .toList()
+            .reversed
+            .toList());
   }
 
   Stream<List<ClassDataStudent>> getClassesOfUser(

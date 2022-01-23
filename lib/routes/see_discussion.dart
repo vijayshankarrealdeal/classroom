@@ -117,7 +117,6 @@ class _DiscussionTextState extends State<DiscussionText> {
                   body: Stack(
                     children: <Widget>[
                       ListView.builder(
-                        reverse: true,
                         itemCount: color.onlypins
                             ? snapshot.data!
                                 .where((element) => element.pin == true)

@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:classroom/controllers/color_controllers.dart';
+import 'package:classroom/controllers/font_controller.dart';
 import 'package:classroom/model/chat_model.dart';
 import 'package:classroom/model/database_users.dart';
 import 'package:classroom/services/db.dart';
@@ -107,7 +108,9 @@ class _DiscussionTextState extends State<DiscussionText> {
                           children: [
                             CupertinoButton(
                                 padding: EdgeInsets.zero,
-                                child: const Icon(CupertinoIcons.video_camera),
+                                child: Provider.of<TypoGraphyOfApp>(context,
+                                        listen: false)
+                                    .button("Join Meeting", color.textColor()),
                                 onPressed: () {}),
                           ],
                         ),
@@ -123,6 +126,7 @@ class _DiscussionTextState extends State<DiscussionText> {
                                 .length
                             : snapshot.data!.length,
                         shrinkWrap: true,
+                        reverse: true,
                         padding: const EdgeInsets.only(top: 10, bottom: 80),
                         physics: const NeverScrollableScrollPhysics(),
                         itemBuilder: (context, index) {
@@ -146,6 +150,7 @@ class _DiscussionTextState extends State<DiscussionText> {
                                           media: snapshot.data![index].media,
                                           ispin: snapshot.data![index].pin,
                                           username: user.data!.name,
+                                          level: user.data!.level,
                                           ismentor:
                                               snapshot.data![index].ismentor,
                                           text: snapshot.data![index].text,
@@ -226,7 +231,7 @@ class _DiscussionTextState extends State<DiscussionText> {
           actions: data.pin == false
               ? [
                   CupertinoButton(
-                    child: Text("Pin"),
+                    child: const Text("Pin"),
                     onPressed: () {
                       db.updatePin(data, classid);
                       Navigator.pop(context);
@@ -242,7 +247,7 @@ class _DiscussionTextState extends State<DiscussionText> {
               : user.uid == db.uid && user.isMentor == true
                   ? [
                       CupertinoButton(
-                          child: Text("UnPin"),
+                          child: const Text("UnPin"),
                           onPressed: () {
                             db.updatePin(data, classid);
                             Navigator.pop(context);

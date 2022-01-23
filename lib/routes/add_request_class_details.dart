@@ -82,7 +82,7 @@ class AddClassDetails extends StatelessWidget {
                           padding: const EdgeInsets.symmetric(vertical: 4.0),
                           child: Container(
                             decoration: BoxDecoration(
-                                color: CupertinoColors.darkBackgroundGray,
+                                color: color.cardColor(),
                                 borderRadius: BorderRadius.circular(15)),
                             child: Padding(
                               padding: const EdgeInsets.all(8.0),

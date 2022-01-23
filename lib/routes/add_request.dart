@@ -73,6 +73,7 @@ class MakeARequest extends StatelessWidget {
                               if (req.validate()) {
                                 if (user.isMentor) {
                                   final data = ClassDataStudent(
+                                    rating: 0.3,
                                     mentoruid: user.uid,
                                     classX: req.name.text.toString(),
                                     mentorname: user.name,

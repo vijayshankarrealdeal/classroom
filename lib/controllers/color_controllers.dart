@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ColorPicker extends ChangeNotifier {
@@ -80,6 +81,14 @@ class ColorPicker extends ChangeNotifier {
     }
   }
 
+  Color reverseColor() {
+    if (light) {
+      return CupertinoColors.white;
+    } else {
+      return CupertinoColors.black;
+    }
+  }
+
   Color onlyWhite() {
     if (!light) {
       return CupertinoColors.white;
@@ -109,6 +118,14 @@ class ColorPicker extends ChangeNotifier {
       return const Color(0xffFF9500);
     } else {
       return const Color(0xffFF9F0A);
+    }
+  }
+
+  Color red() {
+    if (!light) {
+      return Colors.red.shade500;
+    } else {
+      return Colors.red.shade800;
     }
   }
 }

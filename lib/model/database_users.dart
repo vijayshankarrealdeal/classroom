@@ -9,10 +9,12 @@ class UserFromDatabase {
   late final List topicCreated;
   late final List weekreport;
   late final int? totalclass;
+  late final String level;
 
   UserFromDatabase({
     required this.name,
     required this.email,
+    required this.level,
     required this.uid,
     required this.profilepic,
     required this.isMentor,
@@ -25,6 +27,7 @@ class UserFromDatabase {
 
   Map<String, dynamic> toJson() {
     return {
+      'level': level,
       'topicCreated': topicCreated,
       'name': name,
       'email': email,
@@ -39,6 +42,7 @@ class UserFromDatabase {
 
   factory UserFromDatabase.fromJson(Map<String, dynamic> data) {
     return UserFromDatabase(
+        level: data['level'] ?? 'Novice',
         weekreport: data['weekreport'] ?? [],
         totalclass: data['totalclass'] ?? 0,
         topicCreated: data['topicCreated'] ?? [],

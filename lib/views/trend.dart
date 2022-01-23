@@ -6,6 +6,9 @@ import 'package:classroom/routes/add_request.dart';
 import 'package:classroom/routes/add_request_class_details.dart';
 import 'package:classroom/services/db.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_star/star.dart';
+import 'package:flutter_star/star_score.dart';
 import 'package:provider/provider.dart';
 
 class PlayListUI extends StatelessWidget {
@@ -26,7 +29,7 @@ class PlayListUI extends StatelessWidget {
                   padding: EdgeInsets.zero,
                   child: user.isMentor
                       ? const Text("Create a room")
-                      : const Icon(CupertinoIcons.add),
+                      : const Text("Request for a class"),
                   onPressed: () {
                     Navigator.push(
                       context,
@@ -79,25 +82,38 @@ class PlayListUI extends StatelessWidget {
                             },
                             child: Padding(
                               padding: const EdgeInsets.symmetric(
-                                  horizontal: 12.0, vertical: 8.0),
+                                  horizontal: 8.0, vertical: 4.0),
                               child: Container(
-                                height:
-                                    MediaQuery.of(context).size.height * 0.25,
                                 decoration: BoxDecoration(
                                   color: CupertinoColors.tertiarySystemFill,
                                   borderRadius: BorderRadius.circular(15),
                                 ),
                                 child: Padding(
                                   padding: const EdgeInsets.symmetric(
-                                      vertical: 18.0, horizontal: 8.0),
+                                      vertical: 8.0, horizontal: 8.0),
                                   child: Column(
                                     mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
+                                        MainAxisAlignment.spaceEvenly,
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
                                       fonts.heading2(
                                           _metadata.topic, color.textColor()),
+                                      fonts.heading6(
+                                          "Mentor " + _metadata.mentorname,
+                                          color.textColor()),
+                                      fonts.subTitle1(
+                                          "Subtopics", color.textColor()),
+                                      Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: _metadata.subtpoics
+                                            .map((e) => fonts.body1(
+                                                e, color.textColor()))
+                                            .toList(),
+                                      ),
                                       Row(
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceBetween,
@@ -109,10 +125,23 @@ class PlayListUI extends StatelessWidget {
                                               : fonts.subTitle1(
                                                   "${_metadata.studentenrollUid.length} Members already in",
                                                   color.textColor()),
-                                          const Icon(
-                                              CupertinoIcons.checkmark_seal),
+                                          Icon(
+                                            CupertinoIcons.checkmark_seal,
+                                            color: _metadata.studentenrollUid
+                                                    .contains(db.uid)
+                                                ? color.nowarning()
+                                                : color.onlyBlue(),
+                                          ),
                                         ],
-                                      )
+                                      ),
+                                      StarScore(
+                                        score: _metadata.rating,
+                                        star: Star(
+                                            fillColor: color.yellow(),
+                                            emptyColor:
+                                                Colors.grey.withAlpha(88)),
+                                      ),
+                                      const SizedBox(height: 5),
                                     ],
                                   ),
                                 ),

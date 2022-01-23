@@ -1,12 +1,15 @@
 import 'package:classroom/controllers/color_controllers.dart';
 import 'package:classroom/controllers/font_controller.dart';
 import 'package:classroom/controllers/home_controllers.dart';
+import 'package:classroom/model/all_topics.dart';
 import 'package:classroom/model/database_users.dart';
-import 'package:classroom/routes/class_details.dart';
+import 'package:classroom/routes/add_review.dart';
 import 'package:classroom/routes/see_discussion.dart';
 import 'package:classroom/services/db.dart';
-import 'package:classroom/widgets/model_popups.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_star/star.dart';
+import 'package:flutter_star/star_score.dart';
 import 'package:provider/provider.dart';
 
 class HomeUI extends StatelessWidget {
@@ -23,13 +26,7 @@ class HomeUI extends StatelessWidget {
           return <Widget>[
             CupertinoSliverNavigationBar(
               largeTitle: Text(user.isMentor ? "Active Classes" : 'Classes'),
-              trailing: CupertinoButton(
-                padding: EdgeInsets.zero,
-                child: const Icon(CupertinoIcons.settings),
-                onPressed: () => showmodelpop(
-                  context,
-                ),
-              ),
+             
             )
           ];
         },
@@ -60,32 +57,50 @@ class HomeUI extends StatelessWidget {
                               ),
                             ),
                           ),
-
-                          // Navigator.push(
-                          //   context,
-                          //   CupertinoPageRoute(
-                          //     builder: (context) => const DiscussionText(),
-                          //   ),
-                          // ),
                           child: Padding(
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 12.0, vertical: 8.0),
                             child: Container(
-                              height: MediaQuery.of(context).size.height * 0.25,
                               decoration: BoxDecoration(
                                 color: CupertinoColors.tertiarySystemFill,
                                 borderRadius: BorderRadius.circular(15),
                               ),
                               child: Padding(
                                 padding: const EdgeInsets.symmetric(
-                                    vertical: 18.0, horizontal: 8.0),
+                                    vertical: 4.0, horizontal: 8.0),
                                 child: Column(
                                   mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
+                                      MainAxisAlignment.spaceEvenly,
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     font.heading2(
                                         _metadata.topic, color.textColor()),
+                                    font.heading6(
+                                        "Mentor " + _metadata.mentorname,
+                                        color.textColor()),
+                                    font.subTitle1(
+                                        "Subtopics", color.textColor()),
+                                    Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: _metadata.subtpoics
+                                          .map((e) =>
+                                              font.body1(e, color.textColor()))
+                                          .toList(),
+                                    ),
+                                    Row(
+                                      children: [
+                                        font.heading6("Student Enrolled",
+                                            color.textColor()),
+                                        const SizedBox(width: 5),
+                                        font.heading5(
+                                            _metadata.studentenrollUid.length
+                                                .toString(),
+                                            color.textColor()),
+                                      ],
+                                    ),
                                     Row(
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
@@ -96,22 +111,35 @@ class HomeUI extends StatelessWidget {
                                             "Members ${_metadata.studentenrollUid.length}",
                                             color.textColor()),
                                         CupertinoButton(
-                                          child: const Icon(
-                                              CupertinoIcons.info_circle),
-                                          onPressed: () => Navigator.push(
-                                            context,
-                                            CupertinoPageRoute(
-                                              builder: (context) =>
-                                                  ClassDetails(
-                                                user: user,
-                                                previoustile: "Classes",
-                                                data: _metadata,
-                                              ),
-                                            ),
-                                          ),
-                                        )
+                                            child: font.button(
+                                                "Reviews", color.onlyBlue()),
+                                            onPressed: () {
+                                              Navigator.of(context,
+                                                      rootNavigator: true)
+                                                  .push(
+                                                CupertinoPageRoute(
+                                                  builder: (context) =>
+                                                      ChangeNotifierProvider<
+                                                          ClassDataStudent>.value(
+                                                    value: _metadata,
+                                                    child: AddReview(
+                                                      user: user,
+                                                      index: _metadata,
+                                                    ),
+                                                  ),
+                                                ),
+                                              );
+                                            }),
                                       ],
-                                    )
+                                    ),
+                                    StarScore(
+                                      score: _metadata.rating,
+                                      star: Star(
+                                          fillColor: color.yellow(),
+                                          emptyColor:
+                                              Colors.grey.withAlpha(88)),
+                                    ),
+                                    const SizedBox(height: 5),
                                   ],
                                 ),
                               ),

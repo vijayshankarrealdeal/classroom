@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:classroom/controllers/color_controllers.dart';
 import 'package:classroom/controllers/font_controller.dart';
+import 'package:classroom/widgets/mapper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -11,6 +12,7 @@ class ChatBubble extends StatelessWidget {
   ChatBubble({
     Key? key,
     required this.text,
+    required this.level,
     required this.ismentor,
     required this.isCurrentUser,
     required this.username,
@@ -22,6 +24,7 @@ class ChatBubble extends StatelessWidget {
   final bool ismentor;
   final bool isCurrentUser;
   final String username;
+  final String level;
   final bool ispin;
 
   final filter = ProfanityFilter();
@@ -50,15 +53,15 @@ class ChatBubble extends StatelessWidget {
                     : ispin
                         ? CupertinoColors.darkBackgroundGray
                         : media.isNotEmpty
-                            ? CupertinoColors.darkBackgroundGray
-                            : CupertinoColors.activeBlue
+                            ? color.textColor()
+                            : color.onlyBlue()
                 : ismentor
                     ? ispin
-                        ? CupertinoColors.systemYellow
-                        : CupertinoColors.systemGreen
+                        ? color.yellow()
+                        : color.nowarning()
                     : filter.hasProfanity(text)
-                        ? CupertinoColors.destructiveRed
-                        : CupertinoColors.white,
+                        ? color.red()
+                        : color.onlyWhite(),
             borderRadius: BorderRadius.circular(16),
           ),
           child: media.isNotEmpty
@@ -85,8 +88,8 @@ class ChatBubble extends StatelessWidget {
                           ? Align(
                               alignment: Alignment.topRight,
                               child: Icon(
-                                CupertinoIcons.pin,
-                                color: color.textColor(),
+                                CupertinoIcons.star_circle_fill,
+                                color: color.yellow(),
                               ),
                             )
                           : const SizedBox(),
@@ -94,11 +97,24 @@ class ChatBubble extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          font.heading5(
-                              username,
-                              !isCurrentUser
-                                  ? CupertinoColors.darkBackgroundGray
-                                  : color.textColor()),
+                          Row(
+                            children: [
+                              CircleAvatar(
+                                radius: 12,
+                                backgroundColor: MapperX().getMapperX(level),
+                                child: font.body2(
+                                  username.substring(0, 1),
+                                  color.onlyWhite(),
+                                ),
+                              ),
+                              const SizedBox(width: 10), 
+                              font.body1(
+                                  username,
+                                  !isCurrentUser
+                                      ? CupertinoColors.darkBackgroundGray
+                                      : color.textColor()),
+                            ],
+                          ),
                           Text(
                             filter.hasProfanity(text)
                                 ? 'This is an inappropriate message.\n Please maintain discipline of class'

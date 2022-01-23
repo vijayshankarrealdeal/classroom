@@ -86,11 +86,15 @@ class Database extends ChangeNotifier {
         .doc(data.classX)
         .collection('topicscreted')
         .doc(data.id)
-        .update({
-      'review': FieldValue.arrayUnion([
-        {'name': name, 'message': mess, 'uid': uid}
-      ])
-    });
+        .update(
+      {
+        'review': FieldValue.arrayUnion(
+          [
+            {'time': Timestamp.now(), 'name': name, 'message': mess, 'uid': uid}
+          ],
+        ),
+      },
+    );
   }
 
   Future<void> enroll(ClassDataStudent data) async {
@@ -166,11 +170,8 @@ class Database extends ChangeNotifier {
         .collection('discuss')
         .orderBy('time', descending: true)
         .snapshots()
-        .map((event) => event.docs
-            .map((e) => ChatModelX.fromJson(e.data()))
-            .toList()
-            .reversed
-            .toList());
+        .map((event) =>
+            event.docs.map((e) => ChatModelX.fromJson(e.data())).toList());
   }
 
   Stream<List<ClassDataStudent>> getClassesOfUser(

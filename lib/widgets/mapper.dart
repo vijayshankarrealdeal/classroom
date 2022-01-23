@@ -7,6 +7,7 @@ class MapperX {
     "Expert": ColorPicker().purple(),
     "Master": ColorPicker().orange(),
     "Super": ColorPicker().textColor(),
+    "Mentor": ColorPicker().onlyBlack(),
   };
   Color getMapperX(String s) {
     return _map[s]!;

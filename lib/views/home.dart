@@ -26,7 +26,6 @@ class HomeUI extends StatelessWidget {
           return <Widget>[
             CupertinoSliverNavigationBar(
               largeTitle: Text(user.isMentor ? "Active Classes" : 'Classes'),
-             
             )
           ];
         },

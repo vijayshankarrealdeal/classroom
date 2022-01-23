@@ -4,6 +4,7 @@ import 'package:classroom/controllers/color_controllers.dart';
 import 'package:classroom/controllers/font_controller.dart';
 import 'package:classroom/model/chat_model.dart';
 import 'package:classroom/model/database_users.dart';
+import 'package:classroom/routes/show_user_info.dart';
 import 'package:classroom/services/db.dart';
 import 'package:classroom/widgets/chat_bubble.dart';
 import 'package:classroom/widgets/loading_spinner.dart';
@@ -110,7 +111,7 @@ class _DiscussionTextState extends State<DiscussionText> {
                                 padding: EdgeInsets.zero,
                                 child: Provider.of<TypoGraphyOfApp>(context,
                                         listen: false)
-                                    .button("Join Meeting", color.textColor()),
+                                    .button("Join Meeting", color.onlyBlue()),
                                 onPressed: () {}),
                           ],
                         ),
@@ -135,6 +136,19 @@ class _DiscussionTextState extends State<DiscussionText> {
                             builder: (context, user) {
                               return user.hasData
                                   ? GestureDetector(
+                                      onTap: () {
+                                        if (user.data!.uid != db.uid) {
+                                          Navigator.of(context,
+                                                  rootNavigator: false)
+                                              .push(
+                                            CupertinoPageRoute(
+                                              builder: (context) => UserInfoX(
+                                                user: user.data!,
+                                              ),
+                                            ),
+                                          );
+                                        }
+                                      },
                                       onLongPress: () {
                                         {
                                           _pinmessage(

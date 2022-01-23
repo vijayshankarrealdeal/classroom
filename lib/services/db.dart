@@ -19,6 +19,16 @@ class Database extends ChangeNotifier {
     await _ref.collection('users').doc(uid).set(user.toJson());
   }
 
+  Future<void> addRating(
+      Database db, String classID, String chapeterId, double rating) async {
+    await _ref
+        .collection('allTopics')
+        .doc(classID)
+        .collection('topicscreted')
+        .doc(chapeterId)
+        .update({'rating': rating});
+  }
+
   Future<void> addChat(ChatModelX data, String classid) async {
     await _ref
         .collection('chats')

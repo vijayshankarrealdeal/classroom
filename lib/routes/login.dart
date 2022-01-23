@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'package:classroom/controllers/color_controllers.dart';
 import 'package:classroom/controllers/font_controller.dart';
+import 'package:classroom/widgets/error_dialog.dart';
 import 'package:classroom/widgets/loading_spinner.dart';
 import 'package:classroom/widgets/text_form.dart';
 import 'package:flutter/cupertino.dart';
@@ -35,77 +36,92 @@ class _SignInState extends State<SignIn> {
     final color = Provider.of<ColorPicker>(context);
     return CupertinoPageScaffold(
       backgroundColor: CupertinoTheme.of(context).scaffoldBackgroundColor,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          fonts.heading2('Classroom', color.textColor()),
-          SizedBox(
-            height: MediaQuery.of(context).size.height * 0.06,
-          ),
-          Container(
-            width: double.infinity,
-          ),
-          FormFeildApp(
-            controller: _email,
-            placeholder: "Email",
-          ),
-          //TextForm
-          FormFeildApp(
-            controller: _password,
-            placeholder: "Password",
-            hide: true,
-          ),
-          _formType == SignOptions.signUp
-              ? FormFeildApp(
-                  controller: _confirmPassword,
-                  placeholder: "Confirm Password",
-                  hide: true,
-                )
-              : const Text(''),
-          const SizedBox(height: 12.0),
-          isSpin
-              ? CupertinoButton.filled(
-                  child: Text(
-                    primaryText,
-                    style: const TextStyle(
-                      color: CupertinoColors.white,
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            const Spacer(),
+            Text(
+              'Classroom+',
+              style: CupertinoTheme.of(context)
+                  .textTheme
+                  .navLargeTitleTextStyle
+                  .copyWith(
+                      fontSize: MediaQuery.of(context).size.height * 0.055),
+            ),
+
+            SizedBox(
+              height: MediaQuery.of(context).size.height * 0.07,
+            ),
+            Container(
+              width: double.infinity,
+            ),
+            FormFeildApp(
+              controller: _email,
+              placeholder: "Email",
+            ),
+            //TextForm
+            FormFeildApp(
+              controller: _password,
+              placeholder: "Password",
+              hide: true,
+            ),
+            _formType == SignOptions.signUp
+                ? FormFeildApp(
+                    controller: _confirmPassword,
+                    placeholder: "Confirm Password",
+                    hide: true,
+                  )
+                : const Text(''),
+            const SizedBox(height: 12.0),
+            isSpin
+                ? CupertinoButton.filled(
+                    child: Text(
+                      primaryText,
+                      style: const TextStyle(
+                        color: CupertinoColors.white,
+                      ),
                     ),
-                  ),
-                  onPressed: () => submit(_email.text.trim(), _password.text,
-                      _confirmPassword.text, auth),
-                )
-              : loadingSpinner(),
-          // CupertinoButton(
-          //     padding: EdgeInsets.zero,
-          //     child: GenralText(
-          //       text: 'Sign In / Sign up with google',
-          //       family: 'SF-Pro-Text-Semibold',
-          //       color: CupertinoColors.activeBlue,
-          //     ),
-          //     onPressed: () {
-          //       auth.signInWithGoogle();
-          //     }),
-          CupertinoButton(
-              padding: EdgeInsets.zero,
-              child: Text(secondaryText),
-              onPressed: () {
-                setState(() {
-                  _formType = _formType == SignOptions.signIn
-                      ? SignOptions.signUp
-                      : SignOptions.signIn;
-                });
-                _email.clear();
-                _password.clear();
-              }),
-          _formType == SignOptions.signIn
-              ? CupertinoButton(
-                  child: const Text("Forgot Password"),
-                  onPressed: () => forgetPass(context, auth),
-                  padding: const EdgeInsets.only(top: 0.5),
-                )
-              : const Text(''),
-        ],
+                    onPressed: () => submit(_email.text.trim(), _password.text,
+                        _confirmPassword.text, auth),
+                  )
+                : loadingSpinner(),
+            // CupertinoButton(
+            //     padding: EdgeInsets.zero,
+            //     child: GenralText(
+            //       text: 'Sign In / Sign up with google',
+            //       family: 'SF-Pro-Text-Semibold',
+            //       color: CupertinoColors.activeBlue,
+            //     ),
+            //     onPressed: () {
+            //       auth.signInWithGoogle();
+            //     }),
+            CupertinoButton(
+                padding: EdgeInsets.zero,
+                child: Text(secondaryText),
+                onPressed: () {
+                  setState(() {
+                    _formType = _formType == SignOptions.signIn
+                        ? SignOptions.signUp
+                        : SignOptions.signIn;
+                  });
+                  _email.clear();
+                  _password.clear();
+                }),
+            _formType == SignOptions.signIn
+                ? CupertinoButton(
+                    child: const Text("Forgot Password"),
+                    onPressed: () => forgetPass(context, auth, color),
+                    padding: const EdgeInsets.only(top: 0.5),
+                  )
+                : const Text(''),
+            const Spacer(),
+            fonts.subTitle1(
+                "Less teching and more teaching", color.textColor()),
+          ],
+        ),
       ),
     );
   }
@@ -152,7 +168,7 @@ class _SignInState extends State<SignIn> {
     }
   }
 
-  void forgetPass(BuildContext context, Auth auth) {
+  void forgetPass(BuildContext context, Auth auth, ColorPicker colorPicker) {
     // ignore: unused_local_variable
     TextEditingController _emailForget = TextEditingController();
     showCupertinoDialog(
@@ -169,8 +185,13 @@ class _SignInState extends State<SignIn> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text('Forgot Password',
-                      style: CupertinoTheme.of(context).textTheme.textStyle),
+                  Text(
+                    'Forgot Password',
+                    style: CupertinoTheme.of(context)
+                        .textTheme
+                        .textStyle
+                        .copyWith(fontSize: 28, fontWeight: FontWeight.bold),
+                  ),
                   const SizedBox(height: 15.0),
                   Padding(
                     padding: const EdgeInsets.symmetric(
@@ -181,30 +202,31 @@ class _SignInState extends State<SignIn> {
                     ),
                   ),
                   const SizedBox(height: 30.0),
-                  // CupertinoButton(
-                  //     color: colorschema.buttonColor(),
-                  //     child: GenralText(
-                  //         text: 'Submit', color: colorschema.genralText()),
-                  //     onPressed: () async {
-                  //       try {
-                  //         setState(() {
-                  //           isSpin = false;
-                  //         });
-                  //         await auth.forgotPassword(_emailForget.text);
-                  //         passwordRestdialog(context,
-                  //             'Rest password Link is sent on your email\ncheck your inbox');
-                  //         _emailForget.clear();
-                  //         setState(() {
-                  //           isSpin = true;
-                  //         });
-                  //       } catch (e) {
-                  //         setState(() {
-                  //           isSpin = true;
-                  //         });
-                  //         dialog(context, e.message,
-                  //             Provider.of<ColorManager>(context).textH1());
-                  //       }
-                  //     }),
+                  CupertinoButton.filled(
+                      child: Text('Submit',
+                          style: TextStyle(color: colorPicker.onlyWhite())),
+                      onPressed: () async {
+                        try {
+                          setState(() {
+                            isSpin = false;
+                          });
+                          await auth.forgotPassword(_emailForget.text);
+                          errorAlert(context,
+                              'Rest password Link is sent on your email\ncheck your inbox');
+                          _emailForget.clear();
+                          setState(() {
+                            isSpin = true;
+                          });
+                        } catch (e) {
+                          setState(() {
+                            isSpin = true;
+                          });
+                          errorAlert(
+                            context,
+                            "Some Error",
+                          );
+                        }
+                      }),
                   const SizedBox(
                     height: 8.0,
                   ),

@@ -25,6 +25,7 @@ class UserInfoAdd extends ChangeNotifier {
       } else {
         await db.addUser(
           UserFromDatabase(
+            circleChart: [],
             level: "Novice",
             totalclass: 0,
             weekreport: [],

@@ -53,7 +53,7 @@ class ChatBubble extends StatelessWidget {
                     : ispin
                         ? CupertinoColors.darkBackgroundGray
                         : media.isNotEmpty
-                            ? color.textColor()
+                            ? color.onlyBlue()
                             : color.onlyBlue()
                 : ismentor
                     ? ispin
@@ -71,8 +71,49 @@ class ChatBubble extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      font.heading5(
-                          username, CupertinoColors.darkBackgroundGray),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 8.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              children: [
+                                CircleAvatar(
+                                  radius: 12,
+                                  backgroundColor: ismentor
+                                      ? MapperX().getMapperX("Mentor")
+                                      : MapperX().getMapperX(level),
+                                  child: font.body2(
+                                    username.substring(0, 1),
+                                    color.onlyWhite(),
+                                  ),
+                                ),
+                                const SizedBox(width: 10),
+                                font.heading6(
+                                    username,
+                                    !isCurrentUser
+                                        ? CupertinoColors.darkBackgroundGray
+                                        : ispin &&
+                                                filter.hasProfanity(text) ==
+                                                    false
+                                            ? color.onlyBlue()
+                                            : color.textColor()),
+                              ],
+                            ),
+                            ispin
+                                ? Align(
+                                    alignment: Alignment.topRight,
+                                    child: Icon(
+                                      CupertinoIcons.star_circle_fill,
+                                      color: ismentor
+                                          ? CupertinoColors.darkBackgroundGray
+                                          : color.yellow(),
+                                    ),
+                                  )
+                                : const SizedBox(),
+                          ],
+                        ),
+                      ),
                       CachedNetworkImage(
                         imageUrl: media,
                         fit: BoxFit.cover,
@@ -89,7 +130,9 @@ class ChatBubble extends StatelessWidget {
                               alignment: Alignment.topRight,
                               child: Icon(
                                 CupertinoIcons.star_circle_fill,
-                                color: color.yellow(),
+                                color: ismentor
+                                    ? CupertinoColors.darkBackgroundGray
+                                    : color.yellow(),
                               ),
                             )
                           : const SizedBox(),
@@ -101,18 +144,23 @@ class ChatBubble extends StatelessWidget {
                             children: [
                               CircleAvatar(
                                 radius: 12,
-                                backgroundColor: MapperX().getMapperX(level),
+                                backgroundColor: ismentor
+                                    ? MapperX().getMapperX("Mentor")
+                                    : MapperX().getMapperX(level),
                                 child: font.body2(
                                   username.substring(0, 1),
                                   color.onlyWhite(),
                                 ),
                               ),
-                              const SizedBox(width: 10), 
-                              font.body1(
+                              const SizedBox(width: 10),
+                              font.heading6(
                                   username,
                                   !isCurrentUser
                                       ? CupertinoColors.darkBackgroundGray
-                                      : color.textColor()),
+                                      : ispin &&
+                                              filter.hasProfanity(text) == false
+                                          ? color.onlyBlue()
+                                          : color.textColor()),
                             ],
                           ),
                           Text(

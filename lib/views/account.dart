@@ -1,7 +1,5 @@
 import 'dart:ui';
-
 import 'package:classroom/controllers/color_controllers.dart';
-import 'package:classroom/controllers/data.dart';
 import 'package:classroom/controllers/font_controller.dart';
 import 'package:classroom/model/database_users.dart';
 import 'package:classroom/model/notificaiton_req.dart';

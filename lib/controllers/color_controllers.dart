@@ -121,6 +121,14 @@ class ColorPicker extends ChangeNotifier {
     }
   }
 
+  Color anotheruser() {
+    if (!light) {
+      return CupertinoColors.extraLightBackgroundGray;
+    } else {
+      return const Color(0xffF4E5C2);
+    }
+  }
+
   Color red() {
     if (!light) {
       return Colors.red.shade500;

@@ -64,7 +64,7 @@ class ClassDataStudent extends ChangeNotifier {
       classInfo: data['classInfo'],
       id: data['id'],
       classX: data['class'],
-      reviews: data['review'] ?? [],
+      reviews: data['review'],
       topic: data['topic'],
       mentorname: data['mentorname'],
       subtpoics: data["subtpoics"],

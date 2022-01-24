@@ -1,4 +1,5 @@
 import 'package:classroom/controllers/color_controllers.dart';
+import 'package:classroom/controllers/data.dart';
 import 'package:classroom/controllers/font_controller.dart';
 import 'package:classroom/model/all_topics.dart';
 import 'package:classroom/model/database_users.dart';
@@ -32,7 +33,7 @@ class AddReview extends StatelessWidget {
           return <Widget>[
             const CupertinoSliverNavigationBar(
               previousPageTitle: "Classes",
-              largeTitle: Text('Add Review'),
+              largeTitle: Text('Reviews & Ratings'),
             )
           ];
         },
@@ -54,8 +55,11 @@ class AddReview extends StatelessWidget {
                             padding: const EdgeInsets.symmetric(vertical: 4.0),
                             child: Container(
                               decoration: BoxDecoration(
-                                  color: color.cardColor(),
-                                  borderRadius: BorderRadius.circular(15)),
+                                border: Border(
+                                  bottom: BorderSide(
+                                      color: color.cardColor(), width: 1),
+                                ),
+                              ),
                               child: Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: Column(
@@ -73,14 +77,17 @@ class AddReview extends StatelessWidget {
                                                 Colors.blue.shade900,
                                             child: Text(_data['name']
                                                 .toString()
+                                                .toCapitalized()
                                                 .substring(0, 1)
                                                 .toUpperCase()),
                                           ),
-                                          const SizedBox(width: 5),
+                                          const SizedBox(width: 15),
                                           Column(
                                             children: [
-                                              font.subTitle1(
-                                                _data['name'],
+                                              font.body1(
+                                                _data['name']
+                                                    .toString()
+                                                    .toCapitalized(),
                                                 color.textColor(),
                                               ),
                                             ],
@@ -88,8 +95,11 @@ class AddReview extends StatelessWidget {
                                         ],
                                       ),
                                     ),
-                                    font.body1(
-                                        _data['message'], color.textColor()),
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: font.body1(
+                                          _data['message'], color.textColor()),
+                                    ),
                                   ],
                                 ),
                               ),
@@ -105,13 +115,12 @@ class AddReview extends StatelessWidget {
                     CupertinoButton(
                         padding: const EdgeInsets.all(3),
                         child: Icon(
-                          CupertinoIcons.add,
+                          CupertinoIcons.star,
                           color: color.onlyBlue(),
                         ),
                         onPressed: () async {
                           await addRating(
                               context, db, data.classX, data.id, data.rating);
-                          
                         }),
                     Expanded(
                       child: FormFeildApp(

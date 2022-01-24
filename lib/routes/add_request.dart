@@ -23,7 +23,7 @@ class MakeARequest extends StatelessWidget {
         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
           return <Widget>[
             const CupertinoSliverNavigationBar(
-              previousPageTitle: "Trends",
+              previousPageTitle: "Trending",
               largeTitle: Text('Request'),
             )
           ];

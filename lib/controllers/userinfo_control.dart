@@ -6,6 +6,7 @@ import 'package:flutter/cupertino.dart';
 class UserInfoAdd extends ChangeNotifier {
   String textX = 'Select Your ';
   final TextEditingController name = TextEditingController();
+  final TextEditingController bio = TextEditingController();
   final TextEditingController classstudy = TextEditingController();
 
   void change(String text) {
@@ -25,6 +26,7 @@ class UserInfoAdd extends ChangeNotifier {
       } else {
         await db.addUser(
           UserFromDatabase(
+            bio: bio.text,
             circleChart: [],
             level: "Novice",
             totalclass: 0,

@@ -1,4 +1,5 @@
 import 'package:classroom/controllers/color_controllers.dart';
+import 'package:classroom/controllers/data.dart';
 import 'package:classroom/controllers/font_controller.dart';
 import 'package:classroom/model/all_topics.dart';
 import 'package:classroom/model/database_users.dart';
@@ -6,6 +7,8 @@ import 'package:classroom/services/db.dart';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_star/star.dart';
+import 'package:flutter_star/star_score.dart';
 import 'package:provider/provider.dart';
 
 class AddClassDetails extends StatelessWidget {
@@ -27,7 +30,7 @@ class AddClassDetails extends StatelessWidget {
             return <Widget>[
               CupertinoSliverNavigationBar(
                 previousPageTitle: previoustile,
-                largeTitle: Text(data.topic),
+                largeTitle: const Text("Details"),
                 trailing: !user.isMentor
                     ? CupertinoButton(
                         padding: EdgeInsets.zero,
@@ -47,80 +50,136 @@ class AddClassDetails extends StatelessWidget {
             padding: const EdgeInsets.all(8.0),
             child: ListView(
               children: [
-                font.heading6("Mentor " + data.mentorname, color.textColor()),
-                const SizedBox(height: 30),
-                font.heading6("Subtopics", color.textColor()),
-                const SizedBox(height: 5),
+                Text(data.topic.toCapitalized(),
+                    style: CupertinoTheme.of(context)
+                        .textTheme
+                        .navLargeTitleTextStyle),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    font.heading6("Mentor: " + data.mentorname.toCapitalized(),
+                        color.textColor()),
+                    StarScore(
+                      score: data.rating,
+                      star: Star(
+                          fillColor: color.yellow(),
+                          emptyColor: Colors.grey.withAlpha(88)),
+                    ),
+                  ],
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
+                  child: Divider(
+                    height: 1,
+                    color: color.textColor(),
+                  ),
+                ),
+                font.subTitle1("Subtopics:", color.textColor()),
                 Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: data.subtpoics
-                      .map((e) => font.body1(e, color.textColor()))
+                      .map(
+                        (e) => font.body1(
+                          "  ${data.subtpoics.indexOf(e) + 1}) " +
+                              e.toString().toCapitalized(),
+                          color.textColor(),
+                        ),
+                      )
                       .toList(),
                 ),
-                const SizedBox(height: 30),
-                font.heading6("Student Enrolled", color.textColor()),
-                font.heading5(
-                    data.studentenrollUid.length.toString(), color.textColor()),
-                const SizedBox(height: 5),
+                Padding(
+                  padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
+                  child: Divider(
+                    height: 0.3,
+                    color: color.textColor(),
+                  ),
+                ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    font.heading4(
-                      "Reviews",
-                      color.textColor(),
-                    ),
+                    Text("Reviews",
+                        style: CupertinoTheme.of(context)
+                            .textTheme
+                            .navLargeTitleTextStyle),
                   ],
                 ),
-                ListView(
-                  physics: const NeverScrollableScrollPhysics(),
-                  shrinkWrap: true,
-                  children: data.reviews
-                      .map(
-                        (e) => Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 4.0),
-                          child: Container(
-                            decoration: BoxDecoration(
-                                color: color.cardColor(),
-                                borderRadius: BorderRadius.circular(15)),
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 4.0),
-                                    child: Row(
+                ListView.builder(
+                  itemCount: data.reviews.length,
+                  itemBuilder: (context, index) {
+                    var _data = data.reviews[index];
+
+                    return data.reviews.isEmpty
+                        ? Text("No Reviews Yet",
+                            style: CupertinoTheme.of(context)
+                                .textTheme
+                                .navLargeTitleTextStyle)
+                        : Column(
+                            children: <Widget>[
+                              Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 4.0),
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    border: Border(
+                                      bottom: BorderSide(
+                                          color: color.cardColor(), width: 1),
+                                    ),
+                                  ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
-                                        CircleAvatar(
-                                          radius: 15,
-                                          backgroundColor: Colors.blue.shade900,
-                                          child: Text(e['name']
-                                              .toString()
-                                              .substring(0, 1)
-                                              .toUpperCase()),
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              vertical: 4.0),
+                                          child: Row(
+                                            children: [
+                                              CircleAvatar(
+                                                radius: 15,
+                                                backgroundColor:
+                                                    Colors.blue.shade900,
+                                                child: Text(_data['name']
+                                                    .toString()
+                                                    .toCapitalized()
+                                                    .substring(0, 1)
+                                                    .toUpperCase()),
+                                              ),
+                                              const SizedBox(width: 15),
+                                              Column(
+                                                children: [
+                                                  font.body1(
+                                                    _data['name']
+                                                        .toString()
+                                                        .toCapitalized(),
+                                                    color.textColor(),
+                                                  ),
+                                                ],
+                                              ),
+                                            ],
+                                          ),
                                         ),
-                                        const SizedBox(width: 5),
-                                        Column(
-                                          children: [
-                                            font.subTitle1(
-                                                e['name'], color.textColor()),
-                                          ],
+                                        Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: font.body1(_data['message'],
+                                              color.textColor()),
                                         ),
                                       ],
                                     ),
                                   ),
-                                  font.body1(e['message'], color.textColor()),
-                                ],
+                                ),
                               ),
-                            ),
-                          ),
-                        ),
-                      )
-                      .toList(),
+                            ],
+                          );
+                  },
+                  physics: const NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
                 ),
               ],
             ),

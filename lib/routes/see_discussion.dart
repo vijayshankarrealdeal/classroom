@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:classroom/controllers/color_controllers.dart';
+import 'package:classroom/controllers/data.dart';
 import 'package:classroom/controllers/font_controller.dart';
 import 'package:classroom/model/chat_model.dart';
 import 'package:classroom/model/database_users.dart';
@@ -163,7 +164,8 @@ class _DiscussionTextState extends State<DiscussionText> {
                                       child: ChatBubble(
                                           media: snapshot.data![index].media,
                                           ispin: snapshot.data![index].pin,
-                                          username: user.data!.name,
+                                          username:
+                                              user.data!.name.toCapitalized(),
                                           level: user.data!.level,
                                           ismentor:
                                               snapshot.data![index].ismentor,
@@ -190,7 +192,7 @@ class _DiscussionTextState extends State<DiscussionText> {
                                   pickCrop(db);
                                 },
                                 child: const Icon(
-                                  CupertinoIcons.add,
+                                  CupertinoIcons.photo,
                                   color: CupertinoColors.systemBlue,
                                 ),
                               ),
@@ -198,7 +200,10 @@ class _DiscussionTextState extends State<DiscussionText> {
                                 child: FormFeildApp(
                                   suffix: CupertinoButton(
                                     padding: EdgeInsets.zero,
-                                    child: const Text('Send'),
+                                    child: Icon(
+                                      CupertinoIcons.location_fill,
+                                      color: color.onlyBlue(),
+                                    ),
                                     onPressed: () {
                                       db.addChat(
                                           ChatModelX(
@@ -240,12 +245,12 @@ class _DiscussionTextState extends State<DiscussionText> {
       context: context,
       builder: (context) {
         return CupertinoAlertDialog(
-          content: Text(data.pin == true ? "Only Mentor Can Unpin" : "Unpin"),
-          title: Text(!data.pin ? "Pin" : ""),
+          content: Text(data.pin == true ? "Only Mentor Can UnStar" : "Star"),
+          title: Text(!data.pin ? "Star" : ""),
           actions: data.pin == false
               ? [
                   CupertinoButton(
-                    child: const Text("Pin"),
+                    child: const Text("Star"),
                     onPressed: () {
                       db.updatePin(data, classid);
                       Navigator.pop(context);
@@ -261,7 +266,7 @@ class _DiscussionTextState extends State<DiscussionText> {
               : user.uid == db.uid && user.isMentor == true
                   ? [
                       CupertinoButton(
-                          child: const Text("UnPin"),
+                          child: const Text("Un Star"),
                           onPressed: () {
                             db.updatePin(data, classid);
                             Navigator.pop(context);

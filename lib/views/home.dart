@@ -1,4 +1,5 @@
 import 'package:classroom/controllers/color_controllers.dart';
+import 'package:classroom/controllers/data.dart';
 import 'package:classroom/controllers/font_controller.dart';
 import 'package:classroom/controllers/home_controllers.dart';
 import 'package:classroom/model/all_topics.dart';
@@ -25,7 +26,9 @@ class HomeUI extends StatelessWidget {
         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
           return <Widget>[
             CupertinoSliverNavigationBar(
-              largeTitle: Text(user.isMentor ? "Active Classes" : 'Classes'),
+              largeTitle: Text(user.isMentor
+                  ? "Active Classes"
+                  : 'Hi, ' + user.name.toString().toCapitalized()),
             )
           ];
         },
@@ -58,7 +61,7 @@ class HomeUI extends StatelessWidget {
                           ),
                           child: Padding(
                             padding: const EdgeInsets.symmetric(
-                                horizontal: 12.0, vertical: 8.0),
+                                horizontal: 8.0, vertical: 8.0),
                             child: Container(
                               decoration: BoxDecoration(
                                 color: CupertinoColors.tertiarySystemFill,
@@ -66,39 +69,60 @@ class HomeUI extends StatelessWidget {
                               ),
                               child: Padding(
                                 padding: const EdgeInsets.symmetric(
-                                    vertical: 4.0, horizontal: 8.0),
+                                    vertical: 8.0, horizontal: 12.0),
                                 child: Column(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceEvenly,
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    font.heading2(
-                                        _metadata.topic, color.textColor()),
-                                    font.heading6(
-                                        "Mentor " + _metadata.mentorname,
-                                        color.textColor()),
+                                    Text(_metadata.topic.toCapitalized(),
+                                        style: CupertinoTheme.of(context)
+                                            .textTheme
+                                            .navLargeTitleTextStyle),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        font.heading6(
+                                            "Mentor: " +
+                                                _metadata.mentorname
+                                                    .toCapitalized(),
+                                            color.textColor()),
+                                        StarScore(
+                                          score: _metadata.rating,
+                                          star: Star(
+                                              fillColor: color.yellow(),
+                                              emptyColor:
+                                                  Colors.grey.withAlpha(88)),
+                                        ),
+                                      ],
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.only(
+                                          top: 8.0, bottom: 8.0),
+                                      child: Divider(
+                                        height: 1,
+                                        color: color.textColor(),
+                                      ),
+                                    ),
                                     font.subTitle1(
-                                        "Subtopics", color.textColor()),
+                                        "Subtopics:", color.textColor()),
                                     Column(
                                       mainAxisAlignment:
                                           MainAxisAlignment.start,
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: _metadata.subtpoics
-                                          .map((e) =>
-                                              font.body1(e, color.textColor()))
+                                          .map(
+                                            (e) => font.body1(
+                                              "  ${_metadata.subtpoics.indexOf(e) + 1}) " +
+                                                  e.toString().toCapitalized(),
+                                              color.textColor(),
+                                            ),
+                                          )
                                           .toList(),
-                                    ),
-                                    Row(
-                                      children: [
-                                        font.heading6("Student Enrolled",
-                                            color.textColor()),
-                                        const SizedBox(width: 5),
-                                        font.heading5(
-                                            _metadata.studentenrollUid.length
-                                                .toString(),
-                                            color.textColor()),
-                                      ],
                                     ),
                                     Row(
                                       mainAxisAlignment:
@@ -106,11 +130,20 @@ class HomeUI extends StatelessWidget {
                                       crossAxisAlignment:
                                           CrossAxisAlignment.center,
                                       children: [
-                                        font.subTitle1(
-                                            "Members ${_metadata.studentenrollUid.length}",
-                                            color.textColor()),
+                                        Row(
+                                          children: [
+                                            Icon(
+                                              CupertinoIcons.person_2,
+                                              color: color.onlyBlue(),
+                                            ),
+                                            const SizedBox(width: 5),
+                                            font.subTitle1(
+                                                "${_metadata.studentenrollUid.length} / 50",
+                                                color.textColor()),
+                                          ],
+                                        ),
                                         CupertinoButton(
-                                            child: font.button(
+                                            child: font.body1(
                                                 "Reviews", color.onlyBlue()),
                                             onPressed: () {
                                               Navigator.of(context,
@@ -131,14 +164,6 @@ class HomeUI extends StatelessWidget {
                                             }),
                                       ],
                                     ),
-                                    StarScore(
-                                      score: _metadata.rating,
-                                      star: Star(
-                                          fillColor: color.yellow(),
-                                          emptyColor:
-                                              Colors.grey.withAlpha(88)),
-                                    ),
-                                    const SizedBox(height: 5),
                                   ],
                                 ),
                               ),

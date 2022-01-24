@@ -1,4 +1,5 @@
 import 'package:classroom/controllers/color_controllers.dart';
+import 'package:classroom/controllers/data.dart';
 import 'package:classroom/controllers/font_controller.dart';
 import 'package:classroom/controllers/trends_controller.dart';
 import 'package:classroom/model/database_users.dart';
@@ -74,7 +75,7 @@ class PlayListUI extends StatelessWidget {
                                       ChangeNotifierProvider.value(
                                     value: _metadata,
                                     child: const AddClassDetails(
-                                      previoustile: "Trends",
+                                      previoustile: "Trending",
                                     ),
                                   ),
                                 ),
@@ -82,7 +83,7 @@ class PlayListUI extends StatelessWidget {
                             },
                             child: Padding(
                               padding: const EdgeInsets.symmetric(
-                                  horizontal: 8.0, vertical: 4.0),
+                                  horizontal: 8.0, vertical: 8.0),
                               child: Container(
                                 decoration: BoxDecoration(
                                   color: CupertinoColors.tertiarySystemFill,
@@ -90,43 +91,90 @@ class PlayListUI extends StatelessWidget {
                                 ),
                                 child: Padding(
                                   padding: const EdgeInsets.symmetric(
-                                      vertical: 8.0, horizontal: 8.0),
+                                      vertical: 8.0, horizontal: 12.0),
                                   child: Column(
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceEvenly,
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      fonts.heading2(
-                                          _metadata.topic, color.textColor()),
-                                      fonts.heading6(
-                                          "Mentor " + _metadata.mentorname,
-                                          color.textColor()),
+                                      Text(_metadata.topic.toCapitalized(),
+                                          style: CupertinoTheme.of(context)
+                                              .textTheme
+                                              .navLargeTitleTextStyle),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: [
+                                          fonts.heading6(
+                                              "Mentor: " +
+                                                  _metadata.mentorname
+                                                      .toCapitalized(),
+                                              color.textColor()),
+                                          StarScore(
+                                            score: _metadata.rating,
+                                            star: Star(
+                                                fillColor: color.yellow(),
+                                                emptyColor:
+                                                    Colors.grey.withAlpha(88)),
+                                          ),
+                                        ],
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.only(
+                                            top: 8.0, bottom: 8.0),
+                                        child: Divider(
+                                          height: 1,
+                                          color: color.textColor(),
+                                        ),
+                                      ),
                                       fonts.subTitle1(
-                                          "Subtopics", color.textColor()),
+                                          "Subtopics:", color.textColor()),
                                       Column(
                                         mainAxisAlignment:
                                             MainAxisAlignment.start,
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: _metadata.subtpoics
-                                            .map((e) => fonts.body1(
-                                                e, color.textColor()))
+                                            .map(
+                                              (e) => fonts.body1(
+                                                "  ${_metadata.subtpoics.indexOf(e) + 1}) " +
+                                                    e
+                                                        .toString()
+                                                        .toCapitalized(),
+                                                color.textColor(),
+                                              ),
+                                            )
                                             .toList(),
                                       ),
+                                      const SizedBox(height: 5),
                                       Row(
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceBetween,
                                         children: [
-                                          _metadata.studentenrollUid.isEmpty
-                                              ? fonts.body1(
-                                                  "Be The First to enroll",
-                                                  color.textColor())
-                                              : fonts.subTitle1(
-                                                  "${_metadata.studentenrollUid.length} Members already in",
+                                          Row(
+                                            children: [
+                                              _metadata.studentenrollUid.isEmpty
+                                                  ? fonts.body1(
+                                                      "Be The First to enroll:",
+                                                      color.textColor())
+                                                  : Icon(
+                                                      CupertinoIcons.person_2,
+                                                      color: color.onlyBlue(),
+                                                    ),
+                                              const SizedBox(width: 5),
+                                              fonts.subTitle1(
+                                                  "${_metadata.studentenrollUid.length} / 50",
                                                   color.textColor()),
+                                            ],
+                                          ),
                                           Icon(
-                                            CupertinoIcons.checkmark_seal,
+                                            _metadata.studentenrollUid
+                                                    .contains(db.uid)
+                                                ? CupertinoIcons.circle_fill
+                                                : CupertinoIcons.circle,
                                             color: _metadata.studentenrollUid
                                                     .contains(db.uid)
                                                 ? color.nowarning()
@@ -134,14 +182,6 @@ class PlayListUI extends StatelessWidget {
                                           ),
                                         ],
                                       ),
-                                      StarScore(
-                                        score: _metadata.rating,
-                                        star: Star(
-                                            fillColor: color.yellow(),
-                                            emptyColor:
-                                                Colors.grey.withAlpha(88)),
-                                      ),
-                                      const SizedBox(height: 5),
                                     ],
                                   ),
                                 ),

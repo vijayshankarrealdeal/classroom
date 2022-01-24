@@ -19,6 +19,10 @@ class Database extends ChangeNotifier {
     await _ref.collection('users').doc(uid).set(user.toJson());
   }
 
+  Future<void> updateBio(String bio) async {
+    await _ref.collection("users").doc(uid).update({'bio': bio});
+  }
+
   Future<void> addRating(
       Database db, String classID, String chapeterId, double rating) async {
     await _ref
@@ -191,7 +195,7 @@ class Database extends ChangeNotifier {
           .collection('allTopics')
           .doc(studentclass)
           .collection('topicscreted')
-          .where('mentoruid', isEqualTo: uid)
+          .where('mentoruid', isEqualTo: user.uid)
           .snapshots()
           .map((event) => event.docs
               .map((e) => ClassDataStudent.fromJson(e.data()))
@@ -201,7 +205,7 @@ class Database extends ChangeNotifier {
           .collection('allTopics')
           .doc(studentclass)
           .collection('topicscreted')
-          .where('studentenrollUid', arrayContains: uid)
+          .where('studentenrollUid', arrayContains: user.uid)
           .snapshots()
           .map((event) => event.docs
               .map((e) => ClassDataStudent.fromJson(e.data()))

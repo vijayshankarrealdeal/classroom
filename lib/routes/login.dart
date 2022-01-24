@@ -49,6 +49,9 @@ class _SignInState extends State<SignIn> {
                   .textTheme
                   .navLargeTitleTextStyle
                   .copyWith(
+                      color: !color.light
+                          ? CupertinoColors.white.withOpacity(0.9)
+                          : CupertinoColors.black.withOpacity(0.8),
                       fontSize: MediaQuery.of(context).size.height * 0.055),
             ),
 
@@ -118,8 +121,7 @@ class _SignInState extends State<SignIn> {
                   )
                 : const Text(''),
             const Spacer(),
-            fonts.subTitle1(
-                "Less teching and more teaching", color.textColor()),
+            fonts.heading6("Less Talking More Teaching", color.textColor()),
           ],
         ),
       ),
@@ -142,7 +144,7 @@ class _SignInState extends State<SignIn> {
         setState(() {
           isSpin = true;
         });
-        //  dialog(context, e.message, Provider.of<ColorManager>(context).textH1());
+        errorAlert(context, "Please Check Invalid Info.");
       }
     } else {
       if (password == confirmPassword) {
@@ -155,15 +157,16 @@ class _SignInState extends State<SignIn> {
           setState(() {
             isSpin = true;
           });
-          // dialog(
-          //     context, e.message, Provider.of<ColorManager>(context).textH1());
+          errorAlert(context, "Please Check Invalid Info.");
         }
       } else {
         setState(() {
           isSpin = true;
         });
-        // dialog(context, 'Password not matched',
-        //     Provider.of<ColorManager>(context).textH1());
+        errorAlert(
+          context,
+          'Password not matched',
+        );
       }
     }
   }
@@ -198,7 +201,7 @@ class _SignInState extends State<SignIn> {
                         horizontal: 18.0, vertical: 4.0),
                     child: FormFeildApp(
                       controller: _password,
-                      placeholder: "Password",
+                      placeholder: "Email",
                     ),
                   ),
                   const SizedBox(height: 30.0),
@@ -223,7 +226,7 @@ class _SignInState extends State<SignIn> {
                           });
                           errorAlert(
                             context,
-                            "Some Error",
+                            "Please Check Invalid Info.",
                           );
                         }
                       }),

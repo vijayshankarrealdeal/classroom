@@ -1,4 +1,7 @@
+import 'dart:ui';
+
 import 'package:classroom/controllers/color_controllers.dart';
+import 'package:classroom/controllers/data.dart';
 import 'package:classroom/controllers/font_controller.dart';
 import 'package:classroom/model/database_users.dart';
 import 'package:classroom/model/notificaiton_req.dart';
@@ -6,6 +9,7 @@ import 'package:classroom/services/auth.dart';
 import 'package:classroom/services/db.dart';
 import 'package:classroom/widgets/error_dialog.dart';
 import 'package:classroom/widgets/mapper.dart';
+import 'package:classroom/widgets/text_form.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -21,13 +25,14 @@ class TrendsUI extends StatelessWidget {
     final font = Provider.of<TypoGraphyOfApp>(context);
     final color = Provider.of<ColorPicker>(context);
     final user = Provider.of<UserFromDatabase>(context);
+    final db = Provider.of<Database>(context);
 
     return CupertinoPageScaffold(
       child: NestedScrollView(
         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
           return [
             CupertinoSliverNavigationBar(
-              largeTitle: const Text('Notification'),
+              largeTitle: const Text('Profile'),
               trailing: CupertinoButton(
                 padding: EdgeInsets.zero,
                 child: const Text('Logout'),
@@ -43,17 +48,19 @@ class TrendsUI extends StatelessWidget {
           ];
         },
         body: Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.all(12.0),
           child: ListView(
             children: [
               SizedBox(
-                height: 200,
+                height: MediaQuery.of(context).size.height * 0.28,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     CircleAvatar(
-                      backgroundColor: MapperX().getMapperX(user.level),
+                      backgroundColor: user.isMentor
+                          ? MapperX().getMapperX("Mentor")
+                          : MapperX().getMapperX(user.level),
                       child: Center(
                         child: font.heading2(
                             user.name.substring(0, 1), color.onlyWhite()),
@@ -61,24 +68,34 @@ class TrendsUI extends StatelessWidget {
                       radius: 45,
                     ),
                     const SizedBox(width: 30),
-                    font.heading4(user.name, color.textColor()),
-                    const SizedBox(width: 30),
                     Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Align(
-                          alignment: Alignment.bottomLeft,
-                          child: font.body1(
-                            "Classes Enrolled " +
-                                user.topicEnrolled!.length.toString(),
-                            color.textColor(),
-                          ),
-                        ),
+                        Text(user.level,
+                            style: CupertinoTheme.of(context)
+                                .textTheme
+                                .navLargeTitleTextStyle),
                         font.body1(
-                          user.level,
+                          user.bio,
                           color.textColor(),
                         ),
+                      ],
+                    ),
+                    const SizedBox(width: 70),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        font.heading6(
+                          "Classes Enrolled: " +
+                              user.topicEnrolled!.length.toString(),
+                          color.textColor(),
+                        ),
+                        CupertinoButton(
+                            padding: EdgeInsets.zero,
+                            child: const Text("Edit Bio"),
+                            onPressed: () async {
+                              await editBio(context, db, color);
+                            })
                       ],
                     )
                   ],
@@ -91,7 +108,7 @@ class TrendsUI extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        font.button("Dark/Light mode", color.textColor()),
+                        font.body1("Dark/Light mode", color.textColor()),
                         CupertinoSwitch(
                           value: color.light,
                           onChanged: (c) => color.switchmode(),
@@ -101,7 +118,7 @@ class TrendsUI extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        font.button("View Only Pins", color.textColor()),
+                        font.body1("View Only Star Chat.", color.textColor()),
                         CupertinoSwitch(
                           value: color.onlypins,
                           onChanged: (c) => color.switchpins(),
@@ -112,8 +129,16 @@ class TrendsUI extends StatelessWidget {
                 );
               }),
               Divider(color: color.textColor()),
-              font.heading5(
-                  user.isMentor ? "Requests" : "Your Stats", color.textColor()),
+              Text(
+                user.isMentor ? "Requests" : "Your Stats",
+                style: CupertinoTheme.of(context)
+                    .textTheme
+                    .navLargeTitleTextStyle
+                    .copyWith(
+                      fontSize: 24,
+                    ),
+              ),
+              const SizedBox(height: 15),
               user.isMentor
                   ? Consumer<Database>(builder: (context, db, _) {
                       return StreamBuilder<List<Request>>(
@@ -188,9 +213,9 @@ class TrendsUI extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            font.heading6("Weekly Report Of Studying Hr",
-                                color.textColor()),
-                            const SizedBox(height: 5),
+                            font.heading6(
+                                "Weekly Studying Hours", color.textColor()),
+                            const SizedBox(height: 15),
                             SizedBox(
                               height: 400,
                               child: LineChart(
@@ -215,8 +240,8 @@ class TrendsUI extends StatelessWidget {
                                     LineChartBarData(
                                         barWidth: 2,
                                         colors: [
-                                          CupertinoColors.activeBlue,
-                                          CupertinoColors.activeGreen
+                                          color.onlyBlue(),
+                                          color.nowarning(),
                                         ],
                                         isCurved: true,
                                         spots: List.generate(
@@ -269,6 +294,73 @@ class TrendsUI extends StatelessWidget {
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Future<void> editBio(
+      BuildContext context, Database db, ColorPicker colorPicker) async {
+    // ignore: unused_local_variable
+    TextEditingController _bioUpdate = TextEditingController();
+    showCupertinoDialog(
+      context: context,
+      builder: (BuildContext context) => BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 2.0, sigmaY: 2.0),
+        child: Dialog(
+            backgroundColor: CupertinoTheme.of(context).scaffoldBackgroundColor,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12.0),
+            ),
+            child: SizedBox(
+              height: MediaQuery.of(context).size.height * 0.4,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    'Update Bio',
+                    style: CupertinoTheme.of(context)
+                        .textTheme
+                        .textStyle
+                        .copyWith(fontSize: 17, fontWeight: FontWeight.normal),
+                  ),
+                  const SizedBox(height: 15.0),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 18.0, vertical: 4.0),
+                    child: FormFeildApp(
+                      controller: _bioUpdate,
+                      placeholder: "update bio",
+                    ),
+                  ),
+                  const SizedBox(height: 30.0),
+                  CupertinoButton.filled(
+                      child: Text('Submit',
+                          style: TextStyle(color: colorPicker.onlyWhite())),
+                      onPressed: () async {
+                        try {
+                          db.updateBio(_bioUpdate.text);
+
+                          Navigator.pop(context);
+                        } catch (e) {
+                          await errorAlert(
+                            context,
+                            "Some Error",
+                          );
+                          Navigator.pop(context);
+                        }
+                      }),
+                  const SizedBox(
+                    height: 8.0,
+                  ),
+                  CupertinoButton(
+                    child: const Text(
+                      ' Back ',
+                    ),
+                    onPressed: () => Navigator.pop(context),
+                  )
+                ],
+              ),
+            )),
       ),
     );
   }

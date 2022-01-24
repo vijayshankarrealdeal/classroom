@@ -11,9 +11,11 @@ class UserFromDatabase {
   late final int? totalclass;
   late final String level;
   late final List circleChart;
+  late final String bio;
 
   UserFromDatabase({
     required this.name,
+    required this.bio,
     required this.circleChart,
     required this.email,
     required this.level,
@@ -31,6 +33,7 @@ class UserFromDatabase {
     return {
       'circleChart': circleChart,
       'level': level,
+      'bio': bio,
       'topicCreated': topicCreated,
       'name': name,
       'email': email,
@@ -45,6 +48,7 @@ class UserFromDatabase {
 
   factory UserFromDatabase.fromJson(Map<String, dynamic> data) {
     return UserFromDatabase(
+        bio: data['bio'] ?? '',
         circleChart: data['circleChart'] ??
             [
               {'class': 'No Data', 'discussion': -1}

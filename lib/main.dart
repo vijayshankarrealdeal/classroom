@@ -6,8 +6,10 @@ import 'package:classroom/routes/user_info.dart';
 import 'package:classroom/services/auth.dart';
 import 'package:classroom/services/db.dart';
 import 'package:classroom/widgets/loading_spinner.dart';
+import 'package:classroom/widgets/mapper.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:classroom/views/home.dart';
@@ -47,6 +49,7 @@ class MyApp extends StatelessWidget {
           if (_user == null) {
             return CupertinoApp(
               theme: CupertinoThemeData(
+                ///nav bar tab
                 brightness: color.light ? Brightness.light : Brightness.dark,
                 primaryColor: CupertinoColors.systemBlue,
               ),
@@ -96,6 +99,8 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     final listOfKeys = [firstTabNavKey, secondTabNavKey, thirdTabNavKey];
+    final font = Provider.of<TypoGraphyOfApp>(context);
+
     List homeScreenList = [
       const HomeUI(),
       const PlayListUI(),
@@ -125,18 +130,29 @@ class _HomePageState extends State<HomePage> {
                       child: CupertinoTabScaffold(
                         controller: tabController,
                         tabBar: CupertinoTabBar(
-                          items: const <BottomNavigationBarItem>[
-                            BottomNavigationBarItem(
+                          items: <BottomNavigationBarItem>[
+                            const BottomNavigationBarItem(
                               icon: Icon(CupertinoIcons.home),
                               label: 'Home',
                             ),
-                            BottomNavigationBarItem(
+                            const BottomNavigationBarItem(
                               icon: Icon(CupertinoIcons.triangle),
                               label: 'Trending',
                             ),
                             BottomNavigationBarItem(
-                              icon: Icon(CupertinoIcons.app_badge_fill),
-                              label: 'Notification',
+                              icon: Consumer<UserFromDatabase>(
+                                  builder: (context, user, _) {
+                                return CircleAvatar(
+                                  backgroundColor:
+                                      MapperX().getMapperX(user.level),
+                                  child: Center(
+                                    child: font.body1(user.name.substring(0, 1),
+                                        color.onlyWhite()),
+                                  ),
+                                  radius: 12.5,
+                                );
+                              }),
+                              label: 'Profile',
                             ),
                           ],
                         ),

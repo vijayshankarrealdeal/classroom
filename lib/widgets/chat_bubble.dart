@@ -50,18 +50,14 @@ class ChatBubble extends StatelessWidget {
             color: isCurrentUser
                 ? filter.hasProfanity(text)
                     ? CupertinoColors.destructiveRed
-                    : ispin
-                        ? CupertinoColors.darkBackgroundGray
-                        : media.isNotEmpty
-                            ? color.onlyBlue()
-                            : color.onlyBlue()
+                    : media.isNotEmpty
+                        ? color.onlyBlue()
+                        : color.onlyBlue()
                 : ismentor
-                    ? ispin
-                        ? color.yellow()
-                        : color.nowarning()
+                    ? color.nowarning()
                     : filter.hasProfanity(text)
                         ? color.red()
-                        : color.onlyWhite(),
+                        : color.anotheruser(),
             borderRadius: BorderRadius.circular(16),
           ),
           child: media.isNotEmpty
@@ -72,7 +68,7 @@ class ChatBubble extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 8.0),
+                        padding: const EdgeInsets.only(top: 1.0, bottom: 8.0),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -93,10 +89,8 @@ class ChatBubble extends StatelessWidget {
                                     username,
                                     !isCurrentUser
                                         ? CupertinoColors.darkBackgroundGray
-                                        : ispin &&
-                                                filter.hasProfanity(text) ==
-                                                    false
-                                            ? color.onlyBlue()
+                                        : filter.hasProfanity(text) == false
+                                            ? color.onlyWhite()
                                             : color.textColor()),
                               ],
                             ),
@@ -130,9 +124,7 @@ class ChatBubble extends StatelessWidget {
                               alignment: Alignment.topRight,
                               child: Icon(
                                 CupertinoIcons.star_circle_fill,
-                                color: ismentor
-                                    ? CupertinoColors.darkBackgroundGray
-                                    : color.yellow(),
+                                color: color.yellow(),
                               ),
                             )
                           : const SizedBox(),
@@ -157,9 +149,8 @@ class ChatBubble extends StatelessWidget {
                                   username,
                                   !isCurrentUser
                                       ? CupertinoColors.darkBackgroundGray
-                                      : ispin &&
-                                              filter.hasProfanity(text) == false
-                                          ? color.onlyBlue()
+                                      : filter.hasProfanity(text) == false
+                                          ? color.onlyWhite()
                                           : color.textColor()),
                             ],
                           ),

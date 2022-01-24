@@ -23,6 +23,7 @@ class MakePage extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               FormFeildApp(placeholder: 'Name', controller: control.name),
+              FormFeildApp(placeholder: 'Add Bio', controller: control.bio),
               FormFeildApp(
                 placeholder: 'Class',
                 controller: control.classstudy,

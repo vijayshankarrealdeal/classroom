@@ -143,8 +143,9 @@ class _HomePageState extends State<HomePage> {
                               icon: Consumer<UserFromDatabase>(
                                   builder: (context, user, _) {
                                 return CircleAvatar(
-                                  backgroundColor:
-                                      MapperX().getMapperX(user.level),
+                                  backgroundColor: user.isMentor
+                                      ? MapperX().getMapperX("Mentor")
+                                      : MapperX().getMapperX(user.level),
                                   child: Center(
                                     child: font.body1(user.name.substring(0, 1),
                                         color.onlyWhite()),

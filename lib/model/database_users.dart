@@ -49,10 +49,7 @@ class UserFromDatabase {
   factory UserFromDatabase.fromJson(Map<String, dynamic> data) {
     return UserFromDatabase(
         bio: data['bio'] ?? '',
-        circleChart: data['circleChart'] ??
-            [
-              {'class': 'No Data', 'discussion': -1}
-            ],
+        circleChart: data['circleChart'],
         level: data['level'] ?? 'Novice',
         weekreport: data['weekreport'] ?? [],
         totalclass: data['totalclass'] ?? 0,

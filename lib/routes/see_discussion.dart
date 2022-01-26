@@ -98,84 +98,97 @@ class _DiscussionTextState extends State<DiscussionText> {
           builder: (context, snapshot) {
             if (snapshot.hasData) {
               return CupertinoPageScaffold(
-                child: NestedScrollView(
-                  headerSliverBuilder:
-                      (BuildContext context, bool innerBoxIsScrolled) {
-                    return <Widget>[
-                      CupertinoSliverNavigationBar(
-                        previousPageTitle: "Classes",
-                        largeTitle: const Text('Talk'),
-                        trailing: Column(
-                          children: [
-                            CupertinoButton(
-                                padding: EdgeInsets.zero,
-                                child: Provider.of<TypoGraphyOfApp>(context,
-                                        listen: false)
-                                    .button("Join Meeting", color.onlyBlue()),
-                                onPressed: () {}),
-                          ],
-                        ),
-                      )
-                    ];
+                navigationBar: CupertinoNavigationBar(
+                  previousPageTitle: "Classes",
+                  middle: const Text('Discussion'),
+                  trailing: Column(
+                    children: [
+                      CupertinoButton(
+                          padding: EdgeInsets.zero,
+                          child: Provider.of<TypoGraphyOfApp>(context,
+                                  listen: false)
+                              .button("Join Meeting", color.onlyBlue()),
+                          onPressed: () {}),
+                    ],
+                  ),
+                ),
+                child: GestureDetector(
+                  onTap: () {
+                    Focus.of(context).unfocus();
                   },
-                  body: Stack(
+                  child: Column(
                     children: <Widget>[
-                      ListView.builder(
-                        itemCount: color.onlypins
-                            ? snapshot.data!
-                                .where((element) => element.pin == true)
-                                .length
-                            : snapshot.data!.length,
-                        shrinkWrap: true,
-                        reverse: true,
-                        padding: const EdgeInsets.only(top: 10, bottom: 80),
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemBuilder: (context, index) {
-                          return StreamBuilder<UserFromDatabase>(
-                            stream: db.userchat(snapshot.data![index].uid),
-                            builder: (context, user) {
-                              return user.hasData
-                                  ? GestureDetector(
-                                      onTap: () {
-                                        if (user.data!.uid != db.uid) {
-                                          Navigator.of(context,
-                                                  rootNavigator: false)
-                                              .push(
-                                            CupertinoPageRoute(
-                                              builder: (context) => UserInfoX(
-                                                user: user.data!,
-                                              ),
-                                            ),
-                                          );
-                                        }
+                      Expanded(
+                        child: SizedBox(
+                          child: snapshot.data!.isEmpty
+                              ? Text(
+                                  "No Messages",
+                                  style: TextStyle(
+                                      color: color.textColor(), fontSize: 29),
+                                )
+                              : ListView.builder(
+                                  reverse: true,
+                                  itemCount: color.onlypins
+                                      ? snapshot.data!
+                                          .where(
+                                              (element) => element.pin == true)
+                                          .length
+                                      : snapshot.data!.length,
+                                  itemBuilder: (context, index) {
+                                    return StreamBuilder<UserFromDatabase>(
+                                      stream: db
+                                          .userchat(snapshot.data![index].uid),
+                                      builder: (context, user) {
+                                        return user.hasData
+                                            ? GestureDetector(
+                                                onTap: () {
+                                                  if (user.data!.uid !=
+                                                      db.uid) {
+                                                    Navigator.of(context,
+                                                            rootNavigator:
+                                                                false)
+                                                        .push(
+                                                      CupertinoPageRoute(
+                                                        builder: (context) =>
+                                                            UserInfoX(
+                                                          user: user.data!,
+                                                        ),
+                                                      ),
+                                                    );
+                                                  }
+                                                },
+                                                onLongPress: () {
+                                                  {
+                                                    _pinmessage(
+                                                      context,
+                                                      db,
+                                                      snapshot.data![index],
+                                                      user.data!,
+                                                      widget.classid,
+                                                    );
+                                                  }
+                                                },
+                                                child: ChatBubble(
+                                                    media: snapshot
+                                                        .data![index].media,
+                                                    ispin: snapshot
+                                                        .data![index].pin,
+                                                    username: user.data!.name
+                                                        .toCapitalized(),
+                                                    level: user.data!.level,
+                                                    ismentor: snapshot
+                                                        .data![index].ismentor,
+                                                    text: snapshot
+                                                        .data![index].text,
+                                                    isCurrentUser: snapshot
+                                                            .data![index].uid ==
+                                                        db.uid))
+                                            : const SizedBox();
                                       },
-                                      onLongPress: () {
-                                        {
-                                          _pinmessage(
-                                            context,
-                                            db,
-                                            snapshot.data![index],
-                                            user.data!,
-                                            widget.classid,
-                                          );
-                                        }
-                                      },
-                                      child: ChatBubble(
-                                          media: snapshot.data![index].media,
-                                          ispin: snapshot.data![index].pin,
-                                          username:
-                                              user.data!.name.toCapitalized(),
-                                          level: user.data!.level,
-                                          ismentor:
-                                              snapshot.data![index].ismentor,
-                                          text: snapshot.data![index].text,
-                                          isCurrentUser:
-                                              snapshot.data![index].uid ==
-                                                  db.uid))
-                                  : const SizedBox();
-                            },
-                          );
-                        },
+                                    );
+                                  },
+                                ),
+                        ),
                       ),
                       Align(
                         alignment: Alignment.bottomLeft,
@@ -244,8 +257,8 @@ class _DiscussionTextState extends State<DiscussionText> {
       context: context,
       builder: (context) {
         return CupertinoAlertDialog(
-          content: Text(data.pin == true ? "Only Mentor Can UnStar" : "Star"),
-          title: Text(!data.pin ? "Star" : ""),
+          title: Text(
+              !data.pin ? "Star this message" : "Only Mentor can unstar it"),
           actions: data.pin == false
               ? [
                   CupertinoButton(

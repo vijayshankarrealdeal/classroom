@@ -24,11 +24,12 @@ class MakePage extends StatelessWidget {
             children: [
               FormFeildApp(placeholder: 'Name', controller: control.name),
               FormFeildApp(placeholder: 'Add Bio', controller: control.bio),
-              FormFeildApp(
-                placeholder: 'Class',
-                controller: control.classstudy,
-                type: TextInputType.number,
-              ),
+     
+              CupertinoButton(
+                  child: Text(control.classX.toString()),
+                  onPressed: () {
+                    control.showClassPop(context);
+                  }),
               CupertinoButton(
                   child: Text(control.textX.toString()),
                   onPressed: () {

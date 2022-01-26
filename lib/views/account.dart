@@ -1,5 +1,6 @@
 import 'dart:ui';
 import 'package:classroom/controllers/color_controllers.dart';
+import 'package:classroom/controllers/data.dart';
 import 'package:classroom/controllers/font_controller.dart';
 import 'package:classroom/model/database_users.dart';
 import 'package:classroom/model/notificaiton_req.dart';
@@ -151,7 +152,7 @@ class TrendsUI extends StatelessWidget {
                                     itemBuilder: (ctx, index) {
                                       var _data = snapshot.data![index];
                                       return Padding(
-                                        padding: const EdgeInsets.all(8.0),
+                                        padding: const EdgeInsets.all(1.0),
                                         child: Container(
                                           decoration: BoxDecoration(
                                             borderRadius:
@@ -177,20 +178,17 @@ class TrendsUI extends StatelessWidget {
                                                           top: 4,
                                                           bottom: 4),
                                                   child: Divider(
-                                                      height: 2,
-                                                      color: color.onlyBlack()),
+                                                    height: 2,
+                                                    color: color.onlyBlack(),
+                                                  ),
                                                 ),
                                                 font.heading6(
-                                                    "Chapter${_data.chapter}",
+                                                    "Chapter: ${_data.chapter.toString().toCapitalized()}",
                                                     color.textColor()),
                                                 font.body1(
-                                                  _data.request,
+                                                  "Request: " + _data.request,
                                                   color.textColor(),
                                                 ),
-                                                font.body2(
-                                                  _data.discription,
-                                                  color.textColor(),
-                                                )
                                               ],
                                             ),
                                           ),
@@ -271,18 +269,36 @@ class TrendsUI extends StatelessWidget {
                                     .copyWith(color: color.textColor()),
                               ),
                               series: [
-                                PieSeries(
-                                  dataSource: user.circleChart,
-                                  xValueMapper: (data, _) => data['class'],
-                                  yValueMapper: (data, _) => data['discussion'],
-                                  dataLabelSettings: DataLabelSettings(
-                                    isVisible:
-                                        user.circleChart.first['discussion'] ==
-                                                -1
-                                            ? false
-                                            : true,
-                                  ),
-                                ),
+                                user.circleChart.isEmpty
+                                    ? PieSeries(
+                                        dataSource: [
+                                          {
+                                            'class': "No Data",
+                                            'discussion': -1
+                                          },
+                                        ],
+                                        xValueMapper: (data, _) =>
+                                            data['class'],
+                                        yValueMapper: (data, _) =>
+                                            data['discussion'],
+                                        dataLabelSettings: DataLabelSettings(
+                                          isVisible: user.circleChart.isEmpty
+                                              ? false
+                                              : true,
+                                        ),
+                                      )
+                                    : PieSeries(
+                                        dataSource: user.circleChart,
+                                        xValueMapper: (data, _) =>
+                                            data['class'],
+                                        yValueMapper: (data, _) =>
+                                            data['discussion'],
+                                        dataLabelSettings: DataLabelSettings(
+                                          isVisible: user.circleChart.isEmpty
+                                              ? false
+                                              : true,
+                                        ),
+                                      ),
                               ],
                             ),
                           ],

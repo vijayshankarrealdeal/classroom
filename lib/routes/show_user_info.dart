@@ -292,18 +292,36 @@ class UserInfoX extends StatelessWidget {
                                     .copyWith(color: color.textColor()),
                               ),
                               series: [
-                                PieSeries(
-                                  dataSource: user.circleChart,
-                                  xValueMapper: (data, _) => data['class'],
-                                  yValueMapper: (data, _) => data['discussion'],
-                                  dataLabelSettings: DataLabelSettings(
-                                    isVisible:
-                                        user.circleChart.first['discussion'] ==
-                                                -1
-                                            ? false
-                                            : true,
-                                  ),
-                                ),
+                                user.circleChart.isEmpty
+                                    ? PieSeries(
+                                        dataSource: [
+                                          {
+                                            'class': "No Data",
+                                            'discussion': -1
+                                          },
+                                        ],
+                                        xValueMapper: (data, _) =>
+                                            data['class'],
+                                        yValueMapper: (data, _) =>
+                                            data['discussion'],
+                                        dataLabelSettings: DataLabelSettings(
+                                          isVisible: user.circleChart.isEmpty
+                                              ? false
+                                              : true,
+                                        ),
+                                      )
+                                    : PieSeries(
+                                        dataSource: user.circleChart,
+                                        xValueMapper: (data, _) =>
+                                            data['class'],
+                                        yValueMapper: (data, _) =>
+                                            data['discussion'],
+                                        dataLabelSettings: DataLabelSettings(
+                                          isVisible: user.circleChart.isEmpty
+                                              ? false
+                                              : true,
+                                        ),
+                                      ),
                               ],
                             ),
                             Align(
@@ -365,12 +383,17 @@ class UserInfoX extends StatelessWidget {
                                                                   .start,
                                                           children: [
                                                             Text(
-                                                                _metadata.topic
-                                                                    .toCapitalized(),
-                                                                style: CupertinoTheme.of(
-                                                                        context)
-                                                                    .textTheme
-                                                                    .navLargeTitleTextStyle),
+                                                              _metadata.topic
+                                                                  .toCapitalized(),
+                                                              style: CupertinoTheme
+                                                                      .of(context)
+                                                                  .textTheme
+                                                                  .navLargeTitleTextStyle
+                                                                  .copyWith(
+                                                                    fontSize:
+                                                                        28,
+                                                                  ),
+                                                            ),
                                                             Row(
                                                               mainAxisAlignment:
                                                                   MainAxisAlignment

@@ -47,19 +47,18 @@ class PlayListUI extends StatelessWidget {
           child: Consumer3<TrendsController, TypoGraphyOfApp, ColorPicker>(
               builder: (context, trendsdata, fonts, color, _) {
             return ListView(
+              padding: const EdgeInsets.only(left: 8.0, right: 8.0, top: 18),
               children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: CupertinoSearchTextField(
-                    onChanged: (s) => trendsdata.searchFor(user, db),
-                    controller: trendsdata.search,
-                  ),
+                CupertinoSearchTextField(
+                  onChanged: (s) => trendsdata.searchFor(user, db),
+                  controller: trendsdata.search,
                 ),
                 trendsdata.listdata.isEmpty
                     ? const Center(
                         child: CupertinoActivityIndicator(),
                       )
                     : ListView.builder(
+                        padding: const EdgeInsets.only(top: 13),
                         physics: const NeverScrollableScrollPhysics(),
                         shrinkWrap: true,
                         itemBuilder: (context, index) {
@@ -82,8 +81,8 @@ class PlayListUI extends StatelessWidget {
                               );
                             },
                             child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 8.0, vertical: 8.0),
+                              padding:
+                                  const EdgeInsets.symmetric(vertical: 8.0),
                               child: Container(
                                 decoration: BoxDecoration(
                                   color: CupertinoColors.tertiarySystemFill,
@@ -98,10 +97,15 @@ class PlayListUI extends StatelessWidget {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      Text(_metadata.topic.toCapitalized(),
-                                          style: CupertinoTheme.of(context)
-                                              .textTheme
-                                              .navLargeTitleTextStyle),
+                                      Text(
+                                        _metadata.topic.toCapitalized(),
+                                        style: CupertinoTheme.of(context)
+                                            .textTheme
+                                            .navLargeTitleTextStyle
+                                            .copyWith(
+                                              fontSize: 28,
+                                            ),
+                                      ),
                                       Row(
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceBetween,
@@ -182,6 +186,7 @@ class PlayListUI extends StatelessWidget {
                                           ),
                                         ],
                                       ),
+                                      
                                     ],
                                   ),
                                 ),

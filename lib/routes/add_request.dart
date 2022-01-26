@@ -22,9 +22,9 @@ class MakeARequest extends StatelessWidget {
       child: NestedScrollView(
         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
           return <Widget>[
-            const CupertinoSliverNavigationBar(
+            CupertinoSliverNavigationBar(
               previousPageTitle: "Trending",
-              largeTitle: Text('Request'),
+              largeTitle: Text(user.isMentor ? 'Create' : 'Request'),
             )
           ];
         },

@@ -26,9 +26,7 @@ class HomeUI extends StatelessWidget {
         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
           return <Widget>[
             CupertinoSliverNavigationBar(
-              largeTitle: Text(user.isMentor
-                  ? "Active Classes"
-                  : 'Hi, ' + user.name.toString().toCapitalized()),
+              largeTitle: Text('Hi, ' + user.name.toString().toCapitalized()),
             )
           ];
         },
@@ -45,135 +43,157 @@ class HomeUI extends StatelessWidget {
                       );
                     },
                   ),
-                  SliverList(
-                    delegate: SliverChildBuilderDelegate(
-                      (context, index) {
-                        var _metadata = data.listdata[index];
-                        return GestureDetector(
-                          onTap: () =>
-                              Navigator.of(context, rootNavigator: true).push(
-                            CupertinoPageRoute(
-                              builder: (context) => DiscussionText(
-                                classid: data.listdata[index].id,
-                                user: user,
-                              ),
+                  data.listdata.isEmpty
+                      ? SliverFillRemaining(
+                          child: Center(
+                            child: Text(
+                              user.isMentor
+                                  ? "Create a Classroom"
+                                  : "Join a Classroom",
+                              style: CupertinoTheme.of(context)
+                                  .textTheme
+                                  .navLargeTitleTextStyle,
                             ),
                           ),
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 8.0, vertical: 8.0),
-                            child: Container(
-                              decoration: BoxDecoration(
-                                color: CupertinoColors.tertiarySystemFill,
-                                borderRadius: BorderRadius.circular(15),
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: 8.0, horizontal: 12.0),
-                                child: Column(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceEvenly,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(_metadata.topic.toCapitalized(),
-                                        style: CupertinoTheme.of(context)
-                                            .textTheme
-                                            .navLargeTitleTextStyle),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      children: [
-                                        font.heading6(
-                                            "Mentor: " +
-                                                _metadata.mentorname
-                                                    .toCapitalized(),
-                                            color.textColor()),
-                                        StarScore(
-                                          score: _metadata.rating,
-                                          star: Star(
-                                              fillColor: color.yellow(),
-                                              emptyColor:
-                                                  Colors.grey.withAlpha(88)),
-                                        ),
-                                      ],
+                        )
+                      : SliverList(
+                          delegate: SliverChildBuilderDelegate(
+                            (context, index) {
+                              var _metadata = data.listdata[index];
+                              return GestureDetector(
+                                onTap: () =>
+                                    Navigator.of(context, rootNavigator: true)
+                                        .push(
+                                  CupertinoPageRoute(
+                                    builder: (context) => DiscussionText(
+                                      classid: data.listdata[index].id,
+                                      user: user,
                                     ),
-                                    Padding(
-                                      padding: const EdgeInsets.only(
-                                          top: 8.0, bottom: 8.0),
-                                      child: Divider(
-                                        height: 1,
-                                        color: color.textColor(),
+                                  ),
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 8.0, vertical: 8.0),
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color: CupertinoColors.tertiarySystemFill,
+                                      borderRadius: BorderRadius.circular(15),
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 8.0, horizontal: 12.0),
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceEvenly,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            _metadata.topic.toCapitalized(),
+                                            style: CupertinoTheme.of(context)
+                                                .textTheme
+                                                .navLargeTitleTextStyle
+                                                .copyWith(
+                                                  fontSize: 28,
+                                                ),
+                                          ),
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            children: [
+                                              font.heading6(
+                                                  "Mentor: " +
+                                                      _metadata.mentorname
+                                                          .toCapitalized(),
+                                                  color.textColor()),
+                                              StarScore(
+                                                score: _metadata.rating,
+                                                star: Star(
+                                                    fillColor: color.yellow(),
+                                                    emptyColor: Colors.grey
+                                                        .withAlpha(88)),
+                                              ),
+                                            ],
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                                top: 8.0, bottom: 8.0),
+                                            child: Divider(
+                                              height: 1,
+                                              color: color.textColor(),
+                                            ),
+                                          ),
+                                          font.subTitle1(
+                                              "Subtopics:", color.textColor()),
+                                          Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: _metadata.subtpoics
+                                                .map(
+                                                  (e) => font.body1(
+                                                    "  ${_metadata.subtpoics.indexOf(e) + 1}) " +
+                                                        e
+                                                            .toString()
+                                                            .toCapitalized(),
+                                                    color.textColor(),
+                                                  ),
+                                                )
+                                                .toList(),
+                                          ),
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            children: [
+                                              Row(
+                                                children: [
+                                                  Icon(
+                                                    CupertinoIcons.person_2,
+                                                    color: color.onlyBlue(),
+                                                  ),
+                                                  const SizedBox(width: 5),
+                                                  font.subTitle1(
+                                                      "${_metadata.studentenrollUid.length} / 50",
+                                                      color.textColor()),
+                                                ],
+                                              ),
+                                              CupertinoButton(
+                                                  child: font.body1("Reviews",
+                                                      color.onlyBlue()),
+                                                  onPressed: () {
+                                                    Navigator.of(context,
+                                                            rootNavigator: true)
+                                                        .push(
+                                                      CupertinoPageRoute(
+                                                        builder: (context) =>
+                                                            ChangeNotifierProvider<
+                                                                ClassDataStudent>.value(
+                                                          value: _metadata,
+                                                          child: AddReview(
+                                                            user: user,
+                                                            index: _metadata,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    );
+                                                  }),
+                                            ],
+                                          ),
+                                        ],
                                       ),
                                     ),
-                                    font.subTitle1(
-                                        "Subtopics:", color.textColor()),
-                                    Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: _metadata.subtpoics
-                                          .map(
-                                            (e) => font.body1(
-                                              "  ${_metadata.subtpoics.indexOf(e) + 1}) " +
-                                                  e.toString().toCapitalized(),
-                                              color.textColor(),
-                                            ),
-                                          )
-                                          .toList(),
-                                    ),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      children: [
-                                        Row(
-                                          children: [
-                                            Icon(
-                                              CupertinoIcons.person_2,
-                                              color: color.onlyBlue(),
-                                            ),
-                                            const SizedBox(width: 5),
-                                            font.subTitle1(
-                                                "${_metadata.studentenrollUid.length} / 50",
-                                                color.textColor()),
-                                          ],
-                                        ),
-                                        CupertinoButton(
-                                            child: font.body1(
-                                                "Reviews", color.onlyBlue()),
-                                            onPressed: () {
-                                              Navigator.of(context,
-                                                      rootNavigator: true)
-                                                  .push(
-                                                CupertinoPageRoute(
-                                                  builder: (context) =>
-                                                      ChangeNotifierProvider<
-                                                          ClassDataStudent>.value(
-                                                    value: _metadata,
-                                                    child: AddReview(
-                                                      user: user,
-                                                      index: _metadata,
-                                                    ),
-                                                  ),
-                                                ),
-                                              );
-                                            }),
-                                      ],
-                                    ),
-                                  ],
+                                  ),
                                 ),
-                              ),
-                            ),
+                              );
+                            },
+                            childCount: data.listdata.length,
                           ),
-                        );
-                      },
-                      childCount: data.listdata.length,
-                    ),
-                  )
+                        )
                 ],
               );
             },
